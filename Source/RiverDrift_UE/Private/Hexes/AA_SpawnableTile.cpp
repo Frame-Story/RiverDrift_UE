@@ -1,27 +1,27 @@
-#include "AA_SpawnableTile.h"
-#include "./DA_TileBase.h"
+#include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/DA_TileBase.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet//KismetMathLibrary.h"
 #include "Engine/World.h"
 
 
-ASPawnableTile* ASPawnableTile::CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* _owner)
 {
 
 	FOffsetCoord offset = UHexLibrary::offset_from_cube(h);
 
-	ASPawnableTile* tile = CreateTile(offset.col, offset.row, prefab, _owner);
+	ASpawnableTile* tile = CreateTile(offset.col, offset.row, prefab, _owner);
 
 	return tile;
 
 }
 
 
-ASPawnableTile* ASPawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner)
 {
 
-	ASPawnableTile* tile;
+	ASpawnableTile* tile;
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Owner = _owner;
@@ -41,8 +41,8 @@ ASPawnableTile* ASPawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 	nTile = NewObject<UDA_TileBase>();
 
 
-	tile = _owner->GetWorld()->SpawnActor<ASPawnableTile>(
-		ASPawnableTile::StaticClass(), worldPos, FRotator::ZeroRotator, SpawnInfo);
+	tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
+		ASpawnableTile::StaticClass(), worldPos, FRotator::ZeroRotator, SpawnInfo);
 	//tile = _owner->GetWorld()->SpawnActor<AA_SpawnableTile>(AA_SpawnableTile:: , worldPos, FRotator::ZeroRotator, SpawnInfo);
 
 	////SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -70,3 +70,26 @@ ASPawnableTile* ASPawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 	//}
 	return tile;
 }
+
+// Sets default values
+ASpawnableTile::ASpawnableTile()
+{
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+// Called when the game starts or when spawned
+void ASpawnableTile::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+// Called every frame
+void ASpawnableTile::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+

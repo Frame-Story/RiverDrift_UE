@@ -6,7 +6,7 @@
 #include "AA_SpawnableTile.generated.h"
 
 UCLASS()
-class ASPawnableTile : public AActor
+class ASpawnableTile : public AActor
 {
 
 	GENERATED_BODY()
@@ -14,6 +14,7 @@ class ASPawnableTile : public AActor
 public:
 
 
+	ASpawnableTile();
 
 
 	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
@@ -30,13 +31,23 @@ public:
 
 
 	UFUNCTION()
-	static ASPawnableTile* CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* _owner);
+	static ASpawnableTile* CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* _owner);
 
-	static ASPawnableTile* CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner);
+	static ASpawnableTile* CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner);
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UDA_TileBase> TileType;
+
+
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 };
 
