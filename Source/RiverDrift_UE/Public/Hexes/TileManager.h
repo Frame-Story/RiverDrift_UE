@@ -7,6 +7,8 @@
 #include "TileManager.generated.h"
 
 class UDA_TileBase;
+class ASpawnableTile;
+struct FHex;
 
 UCLASS()
 class RIVERDRIFT_UE_API ATileManager : public AActor
@@ -23,9 +25,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	TMap<FHex , ASpawnableTile* > TileMap;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void BuildGrid();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) 
+	void PlaceTile_XY(FPoint point); //c++ func is PlaceTile_XY_Implementation
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void PlaceTile_QRS(FHex hexCoord);
 
 public:	
 	// Called every frame

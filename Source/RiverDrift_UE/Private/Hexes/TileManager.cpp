@@ -3,6 +3,9 @@
 
 #include "Hexes/TileManager.h"
 #include "Hexes/AA_SpawnableTile.h"
+#include "HexLibrary.h"
+#include "Rendering/RenderingSpatialHash.h"
+#include "Math/MathFwd.h"
 #include "Logging/StructuredLog.h"
 
 
@@ -39,6 +42,18 @@ void ATileManager::BuildGrid_Implementation()
 
 }
 
+void ATileManager::PlaceTile_XY_Implementation(FPoint point)
+{
+	UE_LOGFMT(LogTemp, Log, "placing tile with xy coords x {0} y {1}", point.x, point.y);
+
+}
+
+
+
+void ATileManager::PlaceTile_QRS_Implementation(FHex hexCoord)
+{
+	UE_LOGFMT(LogTemp, Log, "placing tile with hex coords q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
+}
 
 // Called every frame
 void ATileManager::Tick(float DeltaTime)

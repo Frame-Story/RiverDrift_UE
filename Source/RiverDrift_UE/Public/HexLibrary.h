@@ -26,6 +26,9 @@ public:
     FHex(int q_, int r_, int s_) : q(q_), r(r_), s(s_) {
         if (q + r + s != 0) throw "q + r + s must be 0";
     }
+    FHex(FVector3d vec) : q(vec.X), r(vec.Y), s(vec.Z) {
+        if (q + r + s != 0) throw "q + r + s must be 0";
+    }
 
     FHex() : q(0), r(0), s(0) {}
 
@@ -50,7 +53,6 @@ USTRUCT(BlueprintType)
 //interchangable with vector2, but just what was used in this lib
 struct FPoint
 {
-
     GENERATED_BODY()
 
     double x;
