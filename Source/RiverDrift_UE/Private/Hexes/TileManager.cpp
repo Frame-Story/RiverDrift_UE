@@ -2,6 +2,9 @@
 
 
 #include "Hexes/TileManager.h"
+#include "Hexes/AA_SpawnableTile.h"
+#include "Logging/StructuredLog.h"
+
 
 // Sets default values
 ATileManager::ATileManager()
@@ -15,8 +18,27 @@ ATileManager::ATileManager()
 void ATileManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UE_LOGFMT(LogTemp, Log, "tilemanager begin play called from cpp class");
+
 	
 }
+
+void ATileManager::BuildGrid_Implementation()
+{
+	UE_LOGFMT(LogTemp, Log, "tilemanager build grid called from cpp class");
+
+	if (this->TileFormat != nullptr) {
+		ASpawnableTile* startTile = ASpawnableTile::CreateTile(0, 0, this->TileFormat, this);
+
+	}
+	else {
+		UE_LOGFMT(LogTemp, Log, "nope the ref is borken lol");
+
+	}
+
+}
+
 
 // Called every frame
 void ATileManager::Tick(float DeltaTime)

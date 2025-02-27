@@ -2,6 +2,7 @@
 #include "Hexes/DA_TileBase.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Logging/StructuredLog.h"
 #include "Kismet//KismetMathLibrary.h"
 #include "Engine/World.h"
 
@@ -20,6 +21,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, UDA_TileBase* prefab, 
 
 ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner)
 {
+	UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
 
 	ASpawnableTile* tile;
 
@@ -84,12 +86,16 @@ void ASpawnableTile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
+
 }
 
 // Called every frame
 void ASpawnableTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
+
 
 }
 
