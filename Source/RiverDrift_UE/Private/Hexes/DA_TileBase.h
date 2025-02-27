@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "../HexLibrary.h"
+//#include "../HexLibrary.h"
 #include "DA_TileBase.generated.h"
 
 /**
  * 
  */
 
-struct FOffsetCoord;
 
 UENUM(BlueprintType)
 enum class ETileType : uint8
@@ -33,8 +32,6 @@ class UDA_TileBase : public UDataAsset
 
 public:
 
-	UPROPERTY(BlueprintReadWrite)
-	float cellSize = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	ETileType ETileType;
@@ -42,30 +39,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	bool bIsPlayerTraversible;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
-	TArray<FHex> Neighbors;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
-	FHex HexCoord;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
-	FOffsetCoord offsetCoord;
-
+	UPROPERTY(BlueprintReadWrite)
+	float cellSize = 0.5f;
 
 	float cellWidth = cellSize;
 	float cellHeight = cellSize;
-
-private:
-
-
-
-	//functions
-
-public:
-
-	UFUNCTION()
-	static UDA_TileBase* CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* owner);
-
-	static UDA_TileBase* CreateTile(int x, int y, UDA_TileBase* prefab, AActor* owner);
 
 };

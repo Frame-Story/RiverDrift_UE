@@ -19,15 +19,27 @@ public:
     //again, might be able to be replaced with Unreal's vec3.
     //advantage of this approach is that the values are explicitly nameddo I
     //advantage of refactoring to vec3 would be the possibility of built in operations
-    const int q;
-    const int r;
-    const int s;
+    int q;
+    int r;
+    int s;
 
     FHex(int q_, int r_, int s_) : q(q_), r(r_), s(s_) {
         if (q + r + s != 0) throw "q + r + s must be 0";
     }
 
     FHex() : q(0), r(0), s(0) {}
+
+    //bool operator==(const FHex& Other) const {
+    //    return q == Other.q && r == Other.r && s == Other.s;
+    //}
+
+    //FHex operator+(const FHex& Other) const {
+    //    return FHex(q + Other.q, r + Other.r, s + Other.s);
+    //}
+
+    //FHex operator-(const FHex& Other) const {
+    //    return FHex(q - Other.q, r - Other.r, s - Other.s);
+    //}
 
     //String ToString() {
     //    return (ToString(q) + " " + ToString(r) + " " + ToString(s));
@@ -41,9 +53,12 @@ struct FPoint
 
     GENERATED_BODY()
 
-    const double x;
-    const double y;
+    double x;
+    double y;
     FPoint(double x_, double y_) : x(x_), y(y_) {}
+    FPoint() : x(0), y(0) {}
+    //FPoint& operator=(const FPoint& other);
+
 };
 
 
@@ -52,12 +67,15 @@ struct FFractionalHex
 {
     GENERATED_BODY()
  
-    const double q;
-    const double r;
-    const double s;
+    double q;
+    double r;
+    double s;
+
     FFractionalHex(double q_, double r_, double s_) : q(q_), r(r_), s(s_) {
         if (round(q + r + s) != 0) throw "q + r + s must be 0";
     }
+    FFractionalHex() : q(0), r(0), s(0) {}
+    //FFractionalHex& operator=(const FFractionalHex& other);
 };
 
 
@@ -67,9 +85,13 @@ struct FOffsetCoord
     GENERATED_BODY()
 
 public:
-    const int col;
-    const int row;
+    int col;
+    int row;
+    FOffsetCoord() : col(0), row(0) {}
+
     FOffsetCoord(int col_, int row_) : col(col_), row(row_) {}
+    //FOffsetCoord& operator=(const FOffsetCoord& other);
+        
 };
 
 
@@ -78,9 +100,13 @@ struct FDoubledCoord
 {
     GENERATED_BODY()
 
-    const int col;
-    const int row;
+    int col;
+    int row;
     FDoubledCoord(int col_, int row_) : col(col_), row(row_) {}
+    FDoubledCoord() : col(0), row(0) {}
+
+    //FDoubledCoord& operator=(const FDoubledCoord& other);
+
 };
 
 
@@ -89,16 +115,20 @@ struct FOrientation
 {
     GENERATED_BODY()
 
-    const double f0;
-    const double f1;
-    const double f2;
-    const double f3;
-    const double b0;
-    const double b1;
-    const double b2;
-    const double b3;
-    const double start_angle;
+    double f0;
+    double f1;
+    double f2;
+    double f3;
+    double b0;
+    double b1;
+    double b2;
+    double b3;
+    double start_angle;
     FOrientation(double f0_, double f1_, double f2_, double f3_, double b0_, double b1_, double b2_, double b3_, double start_angle_) : f0(f0_), f1(f1_), f2(f2_), f3(f3_), b0(b0_), b1(b1_), b2(b2_), b3(b3_), start_angle(start_angle_) {}
+    //FOrientation() : f0(0), f1(0), f2(0), f3(0), b0(0), b1(0), b2(0), b3(0), start_angle(0) {} //I want my default orientation to be pointy, feel free to rewrite this according to your needs
+    FOrientation() : f0(sqrt(3.0)), f1(sqrt(3.0) / 2.0), f2(0.0), f3(3.0 / 2.0), b0(sqrt(3.0) / 3.0), b1( -1.0 / 3.0), b2(0.0), b3(2.0 / 3.0), start_angle(0.5) {} //copy pasted from the def of layout_pointy
+    //FOrientation& operator=(const FOrientation& other);
+
 };
 
 
@@ -107,10 +137,13 @@ struct FLayout
 {
     GENERATED_BODY()
 
-    const FOrientation orientation;
-    const FPoint size;
-    const FPoint origin;
+    FOrientation orientation;
+    FPoint size;
+    FPoint origin;
     FLayout(FOrientation orientation_, FPoint size_, FPoint origin_) : orientation(orientation_), size(size_), origin(origin_) {}
+    FLayout() : orientation(FOrientation()), size(.5, .5), origin(0, 0) {}
+    //FLayout& operator=(const FLayout& other);
+
 };
 
 
@@ -122,6 +155,21 @@ class UHexLibrary : public UObject
     GENERATED_BODY()
 
 public:
+
+    //vars
+
+    static const TArray<FHex> hex_directions;
+    static const FOrientation layout_pointy;
+    static const FOrientation layout_flat;
+
+    static const int EVEN;
+    static const int ODD;
+    
+
+    //static TArray<FHex> FHex GetHexDirections();
+    
+    static TArray<FHex> GetHexDirections();
+
     static FHex hex_add(FHex a, FHex b);
 
 
@@ -156,16 +204,15 @@ public:
 
     static TArray<FHex> hex_linedraw(FHex a, FHex b);
 
-    static const int EVEN = 1;
-    static const int ODD = -1;
+
 
 
 
     static FOffsetCoord offset_from_cube(FHex h, int offset = EVEN);
 
-    static FHex offset_to_cube(int offset, FOffsetCoord h);
+    static FHex offset_to_cube(FOffsetCoord h, int offset = EVEN);
     
-    static  FDoubledCoord doubled_from_cube(FHex h);
+    static FDoubledCoord doubled_from_cube(FHex h);
     
     static  FHex doubled_to_cube(FDoubledCoord h);
     //r is point top
@@ -180,8 +227,6 @@ public:
 
 
 
-    const FOrientation layout_pointy = FOrientation(sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
-    const FOrientation layout_flat = FOrientation(3.0 / 2.0, 0.0, sqrt(3.0) / 2.0, sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, sqrt(3.0) / 3.0, 0.0);
     static FPoint hex_to_pixel(FLayout layout, FHex h);
 
     static FFractionalHex pixel_to_hex(FLayout layout, FPoint p);

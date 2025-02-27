@@ -16,10 +16,20 @@ using std::vector;
 
 
 
+const TArray<FHex> UHexLibrary::hex_directions = { FHex(1, 0, -1), FHex(1, -1, 0), FHex(0, -1, 1), FHex(-1, 0, 1), FHex(-1, 1, 0), FHex(0, 1, -1) };
+const FOrientation UHexLibrary::layout_pointy = FOrientation(sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
+const FOrientation UHexLibrary::layout_flat = FOrientation(3.0 / 2.0, 0.0, sqrt(3.0) / 2.0, sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, sqrt(3.0) / 3.0, 0.0);
 
+const int UHexLibrary::EVEN = 1;
+const int UHexLibrary::ODD = -1;
 
 // Forward declarations
 
+
+TArray<FHex> UHexLibrary::GetHexDirections()
+{
+    return hex_directions;
+}
 
 FHex UHexLibrary::hex_add(FHex a, FHex b)
 {
@@ -51,7 +61,7 @@ FHex UHexLibrary::hex_rotate_right(FHex a)
 }
 
 
-static const TArray<FHex> hex_directions = { FHex(1, 0, -1), FHex(1, -1, 0), FHex(0, -1, 1), FHex(-1, 0, 1), FHex(-1, 1, 0), FHex(0, 1, -1) };
+ 
 FHex UHexLibrary::hex_direction(int direction)
 {
     return hex_directions[direction];
@@ -143,7 +153,7 @@ FOffsetCoord UHexLibrary::offset_from_cube(FHex h, int offset)
 }
 
 
-FHex UHexLibrary::offset_to_cube(int offset, FOffsetCoord h)
+FHex UHexLibrary::offset_to_cube(FOffsetCoord h, int offset)
 {
     int q = h.col;
     int r = h.row - int((h.col + offset * (h.col & 1)) / 2);
@@ -217,9 +227,9 @@ FHex UHexLibrary::doubled_to_cube(FDoubledCoord h)
 
 
 
-
-const FOrientation layout_pointy = FOrientation(sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
-const FOrientation layout_flat = FOrientation(3.0 / 2.0, 0.0, sqrt(3.0) / 2.0, sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, sqrt(3.0) / 3.0, 0.0);
+//
+//layout_pointy = FOrientation(sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
+//FOrientation layout_flat = FOrientation(3.0 / 2.0, 0.0, sqrt(3.0) / 2.0, sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, sqrt(3.0) / 3.0, 0.0);
 FPoint UHexLibrary::hex_to_pixel(FLayout layout, FHex h)
 {
     FOrientation M = layout.orientation;
