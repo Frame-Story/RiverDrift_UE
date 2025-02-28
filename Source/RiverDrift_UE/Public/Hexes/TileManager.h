@@ -26,7 +26,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	TMap<FHex , ASpawnableTile* > TileMap;
+	TMap<FVector3f , ASpawnableTile* > RD_HexMap;
+
+	UFUNCTION(BlueprintCallable)
+	void InsertIntoMap(FHex hex, ASpawnableTile* tile);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void BuildGrid();
@@ -34,7 +37,7 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) 
 	void PlaceTile_XY(FPoint point); //c++ func is PlaceTile_XY_Implementation
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PlaceTile_QRS(FHex hexCoord);
+	void PlaceTile_QRS(FVector3f hexCoord);
 
 public:	
 	// Called every frame

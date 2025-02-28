@@ -27,6 +27,11 @@ void ATileManager::BeginPlay()
 	
 }
 
+void ATileManager::InsertIntoMap(FHex hex, ASpawnableTile* tile)
+{
+	RD_HexMap.Add(FVector3f(hex.q, hex.r, hex.s), tile);
+}
+
 void ATileManager::BuildGrid_Implementation()
 {
 	UE_LOGFMT(LogTemp, Log, "tilemanager build grid called from cpp class");
@@ -50,9 +55,9 @@ void ATileManager::PlaceTile_XY_Implementation(FPoint point)
 
 
 
-void ATileManager::PlaceTile_QRS_Implementation(FHex hexCoord)
+void ATileManager::PlaceTile_QRS_Implementation(FVector3f hexCoord)
 {
-	UE_LOGFMT(LogTemp, Log, "placing tile with hex coords q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
+	UE_LOGFMT(LogTemp, Log, "placing tile with hex coords q {0} r {1} s {2} ", hexCoord.X, hexCoord.Y, hexCoord.Z);
 }
 
 // Called every frame

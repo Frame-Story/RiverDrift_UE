@@ -19,8 +19,11 @@ public:
     //again, might be able to be replaced with Unreal's vec3.
     //advantage of this approach is that the values are explicitly nameddo I
     //advantage of refactoring to vec3 would be the possibility of built in operations
+    UPROPERTY(BlueprintReadWrite)
     int q;
+    UPROPERTY(BlueprintReadWrite)
     int r;
+    UPROPERTY(BlueprintReadWrite)
     int s;
 
     FHex(int q_, int r_, int s_) : q(q_), r(r_), s(s_) {
@@ -55,7 +58,9 @@ struct FPoint
 {
     GENERATED_BODY()
 
+    UPROPERTY(BlueprintReadWrite)
     double x;
+    UPROPERTY(BlueprintReadWrite)
     double y;
     FPoint(double x_, double y_) : x(x_), y(y_) {}
     FPoint() : x(0), y(0) {}
@@ -69,8 +74,11 @@ struct FFractionalHex
 {
     GENERATED_BODY()
  
+    UPROPERTY(BlueprintReadWrite)
     double q;
+    UPROPERTY(BlueprintReadWrite)
     double r;
+    UPROPERTY(BlueprintReadWrite)
     double s;
 
     FFractionalHex(double q_, double r_, double s_) : q(q_), r(r_), s(s_) {
@@ -87,7 +95,9 @@ struct FOffsetCoord
     GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintReadWrite)
     int col;
+    UPROPERTY(BlueprintReadWrite)
     int row;
     FOffsetCoord() : col(0), row(0) {}
 
@@ -102,7 +112,9 @@ struct FDoubledCoord
 {
     GENERATED_BODY()
 
+    UPROPERTY(BlueprintReadWrite)
     int col;
+    UPROPERTY(BlueprintReadWrite)
     int row;
     FDoubledCoord(int col_, int row_) : col(col_), row(row_) {}
     FDoubledCoord() : col(0), row(0) {}
@@ -117,14 +129,23 @@ struct FOrientation
 {
     GENERATED_BODY()
 
+    UPROPERTY(BlueprintReadWrite)
     double f0;
+    UPROPERTY(BlueprintReadWrite)
     double f1;
+    UPROPERTY(BlueprintReadWrite)
     double f2;
+    UPROPERTY(BlueprintReadWrite)
     double f3;
+    UPROPERTY(BlueprintReadWrite)
     double b0;
+    UPROPERTY(BlueprintReadWrite)
     double b1;
+    UPROPERTY(BlueprintReadWrite)
     double b2;
+    UPROPERTY(BlueprintReadWrite)
     double b3;
+    UPROPERTY(BlueprintReadWrite)
     double start_angle;
     FOrientation(double f0_, double f1_, double f2_, double f3_, double b0_, double b1_, double b2_, double b3_, double start_angle_) : f0(f0_), f1(f1_), f2(f2_), f3(f3_), b0(b0_), b1(b1_), b2(b2_), b3(b3_), start_angle(start_angle_) {}
     //FOrientation() : f0(0), f1(0), f2(0), f3(0), b0(0), b1(0), b2(0), b3(0), start_angle(0) {} //I want my default orientation to be pointy, feel free to rewrite this according to your needs
@@ -139,8 +160,11 @@ struct FLayout
 {
     GENERATED_BODY()
 
+    UPROPERTY(BlueprintReadWrite)
     FOrientation orientation;
+    UPROPERTY(BlueprintReadWrite)
     FPoint size;
+    UPROPERTY(BlueprintReadWrite)
     FPoint origin;
     FLayout(FOrientation orientation_, FPoint size_, FPoint origin_) : orientation(orientation_), size(size_), origin(origin_) {}
     FLayout() : orientation(FOrientation()), size(.5, .5), origin(0, 0) {}
