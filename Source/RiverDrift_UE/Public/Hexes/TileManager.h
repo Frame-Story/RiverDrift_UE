@@ -28,15 +28,15 @@ protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	TMap<FVector3f , ASpawnableTile* > RD_HexMap;
 
-	UFUNCTION(BlueprintCallable)
-	void InsertIntoMap(FHex hex, ASpawnableTile* tile);
+	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile);
+
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void BuildGrid();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) 
-	void PlaceTile_XY(FPoint point); //c++ func is PlaceTile_XY_Implementation
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintCallable) 
+	void PlaceTile_XY(int x, int y, UDA_TileBase* format); //c++ func is PlaceTile_XY_Implementation
+	UFUNCTION(BlueprintCallable)
 	void PlaceTile_QRS(FVector3f hexCoord);
 
 public:	

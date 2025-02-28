@@ -21,7 +21,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, UDA_TileBase* prefab, 
 
 ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner)
 {
-	UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
+	//UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
 
 	ASpawnableTile* tile;
 
@@ -86,7 +86,7 @@ void ASpawnableTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
+	//UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
 
 }
 
@@ -94,7 +94,7 @@ void ASpawnableTile::BeginPlay()
 void ASpawnableTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
+	//UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
 
 
 }
