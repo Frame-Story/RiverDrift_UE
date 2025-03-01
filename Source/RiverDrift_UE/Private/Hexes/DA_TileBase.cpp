@@ -4,6 +4,7 @@
 #include "Hexes/DA_TileBase.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "PaperSprite.h"
 #include "Hexes/AA_SpawnableTile.h"
 #include "Kismet//KismetMathLibrary.h"
 #include "Engine/World.h"

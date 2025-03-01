@@ -14,7 +14,6 @@ ATileManager::ATileManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +37,7 @@ void ATileManager::InsertIntoMap(int q, int r, int s, ASpawnableTile* tile)
 void ATileManager::PlaceTile_XY(int x, int y, UDA_TileBase* format) {
 	FHex cubicCoord = UHexLibrary::offset_to_cube(FOffsetCoord(x, y));
 
-	ASpawnableTile* tile = ASpawnableTile::CreateTile(0, 0, this->TileFormat, this);
+	ASpawnableTile* tile = ASpawnableTile::CreateTile(x, y, this->TileFormat, this);
 	
 	UE_LOGFMT(LogTemp, Log, "placetile called || offset coords x {0} y {1} || cubic coords q {2} r {3} s {4} ", x, y, cubicCoord.q, cubicCoord.r, cubicCoord.s);
 	this->InsertIntoMap(cubicCoord.q , cubicCoord.r, cubicCoord.s, tile);
@@ -66,7 +65,8 @@ void ATileManager::BuildGrid_Implementation()
 	}
 
 }
-//
+
+
 //void ATileManager::PlaceTile_XY_Implementation(FPoint point)
 //{
 //	UE_LOGFMT(LogTemp, Log, "placing tile with xy coords x {0} y {1}", point.x, point.y);

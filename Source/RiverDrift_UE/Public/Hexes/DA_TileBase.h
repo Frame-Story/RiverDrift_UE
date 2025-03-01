@@ -6,12 +6,12 @@
 #include "Engine/DataAsset.h"
 //#include "../HexLibrary.h"
 #include "DA_TileBase.generated.h"
-
 /**
  * 
  */
 
-
+class UPaperSprite;
+	
 UENUM(BlueprintType)
 enum class ETileType : uint8
 {
@@ -32,6 +32,8 @@ class UDA_TileBase : public UDataAsset
 
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	UPaperSprite* sprite;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	ETileType ETileType;
@@ -41,7 +43,7 @@ public:
 
 
 	UPROPERTY(BlueprintReadWrite)
-	float cellSize = 0.5f;
+	float cellSize = 250.0f;
 
 	float cellWidth = cellSize;
 	float cellHeight = cellSize;

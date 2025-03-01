@@ -5,6 +5,7 @@
 #include "../HexLibrary.h"
 #include "AA_SpawnableTile.generated.h"
 
+class UPaperSpriteComponent;
 UCLASS()
 class ASpawnableTile : public AActor
 {
@@ -17,13 +18,13 @@ public:
 	ASpawnableTile();
 
 
-	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
 	TArray<FHex> Neighbors;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
 	FHex HexCoord;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Tiles")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
 	FOffsetCoord offsetCoord;
 
 
@@ -40,10 +41,12 @@ public:
 	TObjectPtr<UDA_TileBase> TileType;
 
 
+	UPaperSpriteComponent* SpriteComponent;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 
 public:
 	// Called every frame

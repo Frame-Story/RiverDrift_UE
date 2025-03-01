@@ -18,7 +18,7 @@ class RIVERDRIFT_UE_API ATileManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATileManager();
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UDA_TileBase* TileFormat;
 
 protected:

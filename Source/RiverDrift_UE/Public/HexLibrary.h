@@ -19,11 +19,11 @@ public:
     //again, might be able to be replaced with Unreal's vec3.
     //advantage of this approach is that the values are explicitly nameddo I
     //advantage of refactoring to vec3 would be the possibility of built in operations
-    UPROPERTY(BlueprintReadWrite)
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
     int q;
-    UPROPERTY(BlueprintReadWrite)
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
     int r;
-    UPROPERTY(BlueprintReadWrite)
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
     int s;
 
     FHex(int q_, int r_, int s_) : q(q_), r(r_), s(s_) {
@@ -95,9 +95,10 @@ struct FOffsetCoord
     GENERATED_BODY()
 
 public:
-    UPROPERTY(BlueprintReadWrite)
+    
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
     int col;
-    UPROPERTY(BlueprintReadWrite)
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
     int row;
     FOffsetCoord() : col(0), row(0) {}
 
@@ -198,17 +199,11 @@ public:
 
     static FHex hex_add(FHex a, FHex b);
 
-
-
-
-
     static FHex hex_subtract(FHex a, FHex b);
-
 
     static FHex hex_scale(FHex a, int k);
 
     static FHex hex_rotate_left(FHex a);
-
 
     static FHex hex_rotate_right(FHex a);
 
@@ -218,6 +213,8 @@ public:
 
     //static TArray<FHex> hex_diagonals();
     static FHex hex_diagonal_neighbor(FHex hex, int direction);
+
+
 
     static int hex_length(FHex hex);
 

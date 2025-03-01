@@ -3,7 +3,12 @@
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
+#include "RiverDrift_UE/RiverDrift_UE.h"
 #include "Kismet//KismetMathLibrary.h"
+#include "PaperSprite.h"
+#include "PaperSpriteComponent.h"
+//#include
+// "PaperSprite.h"
 #include "Engine/World.h"
 
 
@@ -37,39 +42,46 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 	worldPos.Z = 0.0f;
 
 	FTransform transform;
-	
-
-	UDA_TileBase* nTile;
-	nTile = NewObject<UDA_TileBase>();
-
 
 	tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
 		ASpawnableTile::StaticClass(), worldPos, FRotator::ZeroRotator, SpawnInfo);
-	//tile = _owner->GetWorld()->SpawnActor<AA_SpawnableTile>(AA_SpawnableTile:: , worldPos, FRotator::ZeroRotator, SpawnInfo);
+	
 
-	////SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	tile->TileType = prefab;
+
+	UE_LOGFMT(LogTemp, Log, "worldpos is: {0}", worldPos.ToString());
 
 
-	////tile.offsetCoord = new OffsetCoord(x, y);
-	////tile.hexCoord = OffsetCoord.OffsetToCube(new OffsetCoord(x, y));
-	////tile.SetHexCoord();
-	////tile.SetOffsetCoord();
+	//UPaperSpriteComponent* SpriteComponent = NewObject<UPaperSpriteComponent>(tile, UPaperSpriteComponent::StaticClass());
+	//
+	//if (SpriteComponent) {
 
-	//FOffsetCoord* ptr = new FOffsetCoord(x, y);
-
-	//tile->offsetCoord = *(new FOffsetCoord(x, y));
-
-	//tile->HexCoord = UHexLibrary::offset_to_cube(FOffsetCoord(x, y));
-	////FOffsetCoord.OffsetToCube(new FOffsetCoord(x, y));
-
-	//tile->Neighbors = *new TArray<FHex>();
-
-	//for (FHex direction : UHexLibrary::hex_directions) {
-
-	//	FHex neighbor = UHexLibrary::hex_add(tile->HexCoord, direction);
-
-	//	tile->Neighbors.Emplace(neighbor);
+	//	SpriteComponent->RegisterComponent();
+	//	SpriteComponent->AttachToComponent(tile->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	//}
+	//else {
+	//	UE_LOGFMT(LogTemp, Error, "NOt valid");
+
+	//}
+
+
+	if (IsValid(prefab->sprite)) {
+		UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab->ETileType));
+
+		tile->SpriteComponent->SetSprite(prefab->sprite);
+	}
+	else {
+		UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(prefab->ETileType));
+	}
+	tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
+
+	tile->offsetCoord = FOffsetCoord::FOffsetCoord(x, y);
+
+	//set tile's coordinates
+	tile->HexCoord = UHexLibrary::offset_to_cube(tile->offsetCoord);
+
+	//prefab->sprite
+
 	return tile;
 }
 
@@ -78,6 +90,11 @@ ASpawnableTile::ASpawnableTile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	UE_LOGFMT(LogTemp, Log, "constr does get called");
+
+	this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
+	SpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));
+	SpriteComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 
 }
 
