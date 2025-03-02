@@ -1,36 +1,34 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/DataAsset.h"
 //#include "../HexLibrary.h"
-#include "DA_TileBase.generated.h"
+#include "TileData.generated.h"
 /**
- * 
+ *
  */
 
 class UPaperSprite;
-	
+
 UENUM(BlueprintType)
 enum class ETileType : uint8
 {
-	TE_Blank UMETA(DisplayName="Blank"),
-	TE_field UMETA(DisplayName="field"),
-	TE_forest UMETA(DisplayName="forest"),
-	TE_mountain UMETA(DisplayName="mountain"),
-	TE_river UMETA(DisplayName="river"),
-	TE_town UMETA(DisplayName="town"),
-	TE_mystery UMETA(DisplayName="mystery"),
+	TE_Blank UMETA(DisplayName = "Blank"),
+	TE_field UMETA(DisplayName = "field"),
+	TE_forest UMETA(DisplayName = "forest"),
+	TE_mountain UMETA(DisplayName = "mountain"),
+	TE_river UMETA(DisplayName = "river"),
+	TE_town UMETA(DisplayName = "town"),
+	TE_mystery UMETA(DisplayName = "mystery"),
 };
 
-UCLASS()
-class UDA_TileBase : public UDataAsset
+USTRUCT()
+struct RIVERDRIFT_UE_API FTileData : public FTableRowBase
 {
 	GENERATED_BODY()
 
 
 public:
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	UPaperSprite* sprite;

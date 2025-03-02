@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TileManager.generated.h"
 
-class UDA_TileBase;
+struct FTileData;
 class ASpawnableTile;
 struct FHex;
 
@@ -18,8 +18,11 @@ class RIVERDRIFT_UE_API ATileManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATileManager();
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UDA_TileBase* TileFormat;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> TileDataTable;
+	//UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	//UDA_TileBase* TileFormat;
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,7 +38,7 @@ protected:
 	void BuildGrid();
 
 	UFUNCTION(BlueprintCallable) 
-	void PlaceTile_XY(int x, int y, UDA_TileBase* format); //c++ func is PlaceTile_XY_Implementation
+	void PlaceTile_XY(int x, int y, FTileData format); //c++ func is PlaceTile_XY_Implementation
 	UFUNCTION(BlueprintCallable)
 	void PlaceTile_QRS(FVector3f hexCoord);
 

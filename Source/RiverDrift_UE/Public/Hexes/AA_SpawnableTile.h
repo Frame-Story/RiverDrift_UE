@@ -2,10 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "TileData.h"
 #include "../HexLibrary.h"
 #include "AA_SpawnableTile.generated.h"
 
 class UPaperSpriteComponent;
+struct FTileData;
 UCLASS()
 class ASpawnableTile : public AActor
 {
@@ -32,13 +34,13 @@ public:
 
 
 	UFUNCTION()
-	static ASpawnableTile* CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* _owner);
+	static ASpawnableTile* CreateTile(const FHex& h, FTileData prefab, AActor* _owner);
 
-	static ASpawnableTile* CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner);
+	static ASpawnableTile* CreateTile(int x, int y, FTileData prefab, AActor* _owner);
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UDA_TileBase> TileType;
+	FTileData TileType;
 
 
 	UPaperSpriteComponent* SpriteComponent;

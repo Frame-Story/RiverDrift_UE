@@ -1,5 +1,5 @@
 #include "Hexes/AA_SpawnableTile.h"
-#include "Hexes/DA_TileBase.h"
+#include "Hexes/TileData.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
@@ -12,7 +12,7 @@
 #include "Engine/World.h"
 
 
-ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, UDA_TileBase* prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, FTileData prefab, AActor* _owner)
 {
 
 	FOffsetCoord offset = UHexLibrary::offset_from_cube(h);
@@ -24,7 +24,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, UDA_TileBase* prefab, 
 }
 
 
-ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActor* _owner)
 {
 	//UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
 
@@ -37,8 +37,8 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 
 
 	FVector worldPos;
-	worldPos.X = (x + y * 0.5f - y / 2) * (prefab->cellSize * 2.0f);
-	worldPos.Y = y * (prefab->cellWidth * 1.5f);
+	worldPos.X = (x + y * 0.5f - y / 2) * (prefab.cellSize * 2.0f);
+	worldPos.Y = y * (prefab.cellWidth * 1.5f);
 	worldPos.Z = 0.0f;
 
 	FTransform transform;
@@ -46,8 +46,8 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 	tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
 		ASpawnableTile::StaticClass(), worldPos, FRotator::ZeroRotator, SpawnInfo);
 	
-
 	tile->TileType = prefab;
+	//tile->TileType = prefab.ETileType;
 
 	UE_LOGFMT(LogTemp, Log, "worldpos is: {0}", worldPos.ToString());
 
@@ -65,13 +65,13 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 	//}
 
 
-	if (IsValid(prefab->sprite)) {
-		UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab->ETileType));
+	if (IsValid(prefab.sprite)) {
+		UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
 
-		tile->SpriteComponent->SetSprite(prefab->sprite);
+		tile->SpriteComponent->SetSprite(prefab.sprite);
 	}
 	else {
-		UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(prefab->ETileType));
+		UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(prefab.ETileType));
 	}
 	tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
 
@@ -80,7 +80,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, UDA_TileBase* prefab, A
 	//set tile's coordinates
 	tile->HexCoord = UHexLibrary::offset_to_cube(tile->offsetCoord);
 
-	//prefab->sprite
+	//prefab.sprite
 
 	return tile;
 }

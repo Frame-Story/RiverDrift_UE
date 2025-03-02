@@ -4,6 +4,7 @@
 #include "Hexes/TileManager.h"
 #include "Hexes/AA_SpawnableTile.h"
 #include "HexLibrary.h"
+#include "Hexes/TileData.h"
 #include "Rendering/RenderingSpatialHash.h"
 #include "Math/MathFwd.h"
 #include "Logging/StructuredLog.h"
@@ -34,10 +35,12 @@ void ATileManager::InsertIntoMap(int q, int r, int s, ASpawnableTile* tile)
 }
 
 
-void ATileManager::PlaceTile_XY(int x, int y, UDA_TileBase* format) {
+void ATileManager::PlaceTile_XY(int x, int y, FTileData format) {
+
+	//FTileData tileData = format.GetRow<FTileData>("");
 	FHex cubicCoord = UHexLibrary::offset_to_cube(FOffsetCoord(x, y));
 
-	ASpawnableTile* tile = ASpawnableTile::CreateTile(x, y, this->TileFormat, this);
+	ASpawnableTile* tile = ASpawnableTile::CreateTile(x, y, format, this);
 	
 	UE_LOGFMT(LogTemp, Log, "placetile called || offset coords x {0} y {1} || cubic coords q {2} r {3} s {4} ", x, y, cubicCoord.q, cubicCoord.r, cubicCoord.s);
 	this->InsertIntoMap(cubicCoord.q , cubicCoord.r, cubicCoord.s, tile);
@@ -51,18 +54,45 @@ void ATileManager::PlaceTile_QRS(FVector3f hexCoord)
 void ATileManager::BuildGrid_Implementation()
 {
 	UE_LOGFMT(LogTemp, Log, "tilemanager build grid called from cpp class");
+	
+	if (this->TileDataTable) {
 
-	if (this->TileFormat != nullptr) {
-		ATileManager::PlaceTile_XY(0, 0, this->TileFormat);
-		ATileManager::PlaceTile_XY(0, 1, this->TileFormat);
-		ATileManager::PlaceTile_XY(1, 0, this->TileFormat);
-		ATileManager::PlaceTile_XY(1, 1, this->TileFormat);
+		FPermissionListOwners names =  this->TileDataTable->GetRowNames();
+
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				int rand = FMath::RandRange(0, names.Num() - 1);
+				FName name = names[rand];
+				//auto temp = 
+				UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
+
+				FTileData f = *this->TileDataTable->FindRow<FTileData>(name, "");
+				ATileManager::PlaceTile_XY(i, j, f);
+
+			}
+		}
+
+	}
+	else {
+		UE_LOGFMT(LogTemp, Log, "tile data table ref not set");
+
+	}
+
+	/*
+	auto names = this->TileDataTable->FindRow<
+		->GetRowNames();
+	FDataTableRowHandle randFormat = names[0].;
+	if (names[0] != nullptr) {
+		ATileManager::PlaceTile_XY(0, 0, randFormat);
+		ATileManager::PlaceTile_XY(0, 1, randFormat);
+		ATileManager::PlaceTile_XY(1, 0, randFormat);
+		ATileManager::PlaceTile_XY(1, 1, randFormat);
 
 	}
 	else {
 		UE_LOGFMT(LogTemp, Log, "nope the ref is borken lol");
 
-	}
+	}*/
 
 }
 
