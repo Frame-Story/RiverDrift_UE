@@ -153,10 +153,10 @@ FOffsetCoord UHexLibrary::offset_from_cube(FHex h, int offset)
 }
 
 
-FHex UHexLibrary::offset_to_cube(FOffsetCoord h, int offset)
+FHex UHexLibrary::offset_to_cube(FOffsetCoord c, int offset)
 {
-    int q = h.col;
-    int r = h.row - int((h.col + offset * (h.col & 1)) / 2);
+    int q = c.col;
+    int r = c.row - int((c.col + offset * (c.col & 1)) / 2);
     int s = -q - r;
     if (offset != EVEN && offset != ODD)
     {

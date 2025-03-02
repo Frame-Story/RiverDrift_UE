@@ -24,6 +24,8 @@ ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, FTileData prefab, AAct
 }
 
 
+
+//should standardize your calls
 ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActor* _owner)
 {
 	//UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
@@ -66,7 +68,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActo
 
 
 	if (IsValid(prefab.sprite)) {
-		UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
+		//UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
 
 		tile->SpriteComponent->SetSprite(prefab.sprite);
 	}
@@ -90,7 +92,7 @@ ASpawnableTile::ASpawnableTile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	UE_LOGFMT(LogTemp, Log, "constr does get called");
+	UE_LOGFMT(LogTemp, Log, "ASPawnableTile constr called");
 
 	this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
 	SpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));

@@ -36,7 +36,7 @@ public:
 	UFUNCTION()
 	static ASpawnableTile* CreateTile(const FHex& h, FTileData prefab, AActor* _owner);
 
-	static ASpawnableTile* CreateTile(int x, int y, FTileData prefab, AActor* _owner);
+	static ASpawnableTile* CreateTile(FOffsetCoord c, FTileData prefab, AActor* _owner);
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

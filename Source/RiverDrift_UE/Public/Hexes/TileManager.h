@@ -9,6 +9,7 @@
 struct FTileData;
 class ASpawnableTile;
 struct FHex;
+struct FOffsetCoord;
 
 UCLASS()
 class RIVERDRIFT_UE_API ATileManager : public AActor
@@ -28,8 +29,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	TMap<FVector3f , ASpawnableTile* > RD_HexMap;
+	//UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	//TMap<FVector3f , ASpawnableTile* > RD_HexMap; //I think this is actually unneeded?
 
 	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile);
 
@@ -38,11 +39,12 @@ protected:
 	void BuildGrid();
 
 	UFUNCTION(BlueprintCallable) 
-	void PlaceTile_XY(int x, int y, FTileData format); //c++ func is PlaceTile_XY_Implementation
+	void PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format); //c++ func is PlaceTile_XY_Implementation
 	UFUNCTION(BlueprintCallable)
-	void PlaceTile_QRS(FVector3f hexCoord);
+	void PlaceTile_QRS(FHex hexCoord, FTileData format);
 
 public:	
+	FTileData SelectRandomTile(bool* valid);
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

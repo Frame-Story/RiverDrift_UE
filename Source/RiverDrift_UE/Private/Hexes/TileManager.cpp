@@ -22,7 +22,7 @@ void ATileManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOGFMT(LogTemp, Log, "tilemanager begin play started from cpp class size of map is {0}", RD_HexMap.IsEmpty());
+	//UE_LOGFMT(LogTemp, Log, "tilemanager begin play started from cpp class size of map is {0}", RD_HexMap.IsEmpty());
 
 	BuildGrid();
 	UE_LOGFMT(LogTemp, Log, "tilemanager begin play called from cpp class");
@@ -31,24 +31,30 @@ void ATileManager::BeginPlay()
 
 void ATileManager::InsertIntoMap(int q, int r, int s, ASpawnableTile* tile)
 {
-	RD_HexMap.Add(FVector3f(q, r, s), tile);
+	//RD_HexMap.Add(FVector3f(q, r, s), tile); //removing hexmap for now
 }
 
 
-void ATileManager::PlaceTile_XY(int x, int y, FTileData format) {
+void ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format) {
 
+	UE_LOGFMT(LogTemp, Log, "placetile_XY called || offset coords x {0} y {1} ", offsetCoord.col, offsetCoord.row);
 	//FTileData tileData = format.GetRow<FTileData>("");
-	FHex cubicCoord = UHexLibrary::offset_to_cube(FOffsetCoord(x, y));
+	FHex cubicCoord = UHexLibrary::offset_to_cube(offsetCoord); //static instantiation of FHex? Dunaganq
 
-	ASpawnableTile* tile = ASpawnableTile::CreateTile(x, y, format, this);
+	ATileManager::PlaceTile_QRS(cubicCoord, format);
+
+	//ASpawnableTile* tile = ASpawnableTile::CreateTile(x, y, format, this);
 	
-	UE_LOGFMT(LogTemp, Log, "placetile called || offset coords x {0} y {1} || cubic coords q {2} r {3} s {4} ", x, y, cubicCoord.q, cubicCoord.r, cubicCoord.s);
-	this->InsertIntoMap(cubicCoord.q , cubicCoord.r, cubicCoord.s, tile);
 	
 }
 
-void ATileManager::PlaceTile_QRS(FVector3f hexCoord)
+void ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 {
+
+	UE_LOGFMT(LogTemp, Log, "placetile_QRS called ||  cubic coords q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
+
+	ASpawnableTile* tile = ASpawnableTile::CreateTile(hexCoord, format, this);
+
 }
 
 void ATileManager::BuildGrid_Implementation()
@@ -59,41 +65,58 @@ void ATileManager::BuildGrid_Implementation()
 
 		FPermissionListOwners names =  this->TileDataTable->GetRowNames();
 
+
+
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				int rand = FMath::RandRange(0, names.Num() - 1);
-				FName name = names[rand];
-				//auto temp = 
-				UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
 
-				FTileData f = *this->TileDataTable->FindRow<FTileData>(name, "");
-				ATileManager::PlaceTile_XY(i, j, f);
+				bool bTileIsValid = false;
+				FTileData f = this->SelectRandomTile(&bTileIsValid);
+
+				if (bTileIsValid) {
+					this->PlaceTile_XY(FOffsetCoord(i,j), f);
+				}
+				else {
+					UE_LOGFMT(LogTemp, Log, "bTileIsValid false, didn't place");
+
+				}
+
 
 			}
 		}
+
+
 
 	}
 	else {
 		UE_LOGFMT(LogTemp, Log, "tile data table ref not set");
 
 	}
+}
 
-	/*
-	auto names = this->TileDataTable->FindRow<
-		->GetRowNames();
-	FDataTableRowHandle randFormat = names[0].;
-	if (names[0] != nullptr) {
-		ATileManager::PlaceTile_XY(0, 0, randFormat);
-		ATileManager::PlaceTile_XY(0, 1, randFormat);
-		ATileManager::PlaceTile_XY(1, 0, randFormat);
-		ATileManager::PlaceTile_XY(1, 1, randFormat);
 
+FTileData ATileManager::SelectRandomTile(bool* valid)
+{
+	FTileData tile;
+	if (this->TileDataTable) {
+
+
+		FPermissionListOwners names = this->TileDataTable->GetRowNames();
+		int rand = FMath::RandRange(0, names.Num() - 1);
+		FName name = names[rand];
+		//auto temp = 
+		UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
+
+		tile = *this->TileDataTable->FindRow<FTileData>(name, "");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
+		*valid = true;
+		return tile;
 	}
 	else {
-		UE_LOGFMT(LogTemp, Log, "nope the ref is borken lol");
+		UE_LOGFMT(LogTemp, Error, "ERROR: TileManager.TileDataTable ref not valid, make sure you set it");
+		return tile;
 
-	}*/
-
+	}
+	
 }
 
 
