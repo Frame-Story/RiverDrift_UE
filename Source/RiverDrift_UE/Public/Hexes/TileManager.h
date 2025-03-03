@@ -43,6 +43,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void PlaceTile_QRS(FHex hexCoord, FTileData format);
 
+	void PlaceNeighbors(ASpawnableTile* tile);
+
 public:	
 	FTileData SelectRandomTile(bool* valid);
 	// Called every frame

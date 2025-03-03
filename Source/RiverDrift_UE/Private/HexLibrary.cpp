@@ -15,7 +15,7 @@ using std::vector;
 #endif
 
 
-
+//starts directly down?
 const TArray<FHex> UHexLibrary::hex_directions = { FHex(1, 0, -1), FHex(1, -1, 0), FHex(0, -1, 1), FHex(-1, 0, 1), FHex(-1, 1, 0), FHex(0, 1, -1) };
 const FOrientation UHexLibrary::layout_pointy = FOrientation(sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
 const FOrientation UHexLibrary::layout_flat = FOrientation(3.0 / 2.0, 0.0, sqrt(3.0) / 2.0, sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, sqrt(3.0) / 3.0, 0.0);
@@ -142,9 +142,9 @@ TArray<FHex> UHexLibrary::hex_linedraw(FHex a, FHex b)
 
 
 FOffsetCoord UHexLibrary::offset_from_cube(FHex h, int offset)
-{
-    int col = h.q;
-    int row = h.r + int((h.q + offset * (h.q & 1)) / 2);
+{//even = positive
+    int col = h.q + int((h.r + offset * (h.r & 1)) / 2);
+    int row = h.r;
     if (offset != EVEN && offset != ODD)
     {
         throw "offset must be EVEN (+1) or ODD (-1)";
@@ -152,22 +152,52 @@ FOffsetCoord UHexLibrary::offset_from_cube(FHex h, int offset)
     return FOffsetCoord(col, row);
 }
 
-
+//x is col, y is row
 FHex UHexLibrary::offset_to_cube(FOffsetCoord c, int offset)
 {
-    int q = c.col;
-    int r = c.row - int((c.col + offset * (c.col & 1)) / 2);
+    int q = c.x - int((c.y + offset * (c.y & 1)) / 2);
+    int r = c.y;
+    //int q = c.col - int((c.row + offset * (h.row & 1)) / 2);
+    //int r = c.row;
     int s = -q - r;
     if (offset != EVEN && offset != ODD)
     {
         throw "offset must be EVEN (+1) or ODD (-1)";
     }
     return FHex(q, r, s);
+
+
+    ////old flat top version
+    //int q = c.x;
+    //int r = ( c.y *1) - int((c.x + offset * (c.x & 1)) / 2);
+    ////      y - (x +(x%2))/2
+    ////      row - (col +(col%2))/2
+    //int s = -q - r;
+    //if (offset != EVEN && offset != ODD)
+    //{
+    //    throw "offset must be EVEN (+1) or ODD (-1)";
+    //}
+    //return FHex(q, r, s);
 }
 
 //
 //FOffsetCoord UHexLibrary::roffset_from_cube(int offset, FHex h)
 //{
+// 
+// //for flat top 
+//int q = c.x;
+//int r = (c.y * 1) - int((c.x + offset * (c.x & 1)) / 2);
+////      y - (x +(x%2))/2
+////      row - (col +(col%2))/2
+//int s = -q - r;
+//if (offset != EVEN && offset != ODD)
+//{
+//    throw "offset must be EVEN (+1) or ODD (-1)";
+//}
+//return FHex(q, r, s);
+// 
+// 
+// //for pointy top - current
 //    int col = h.q + int((h.r + offset * (h.r & 1)) / 2);
 //    int row = h.r;
 //    if (offset != EVEN && offset != ODD)
@@ -180,6 +210,7 @@ FHex UHexLibrary::offset_to_cube(FOffsetCoord c, int offset)
 //
 //FHex UHexLibrary::roffset_to_cube(int offset, FOffsetCoord h)
 //{
+// //pointy top - current
 //    int q = h.col - int((h.row + offset * (h.row & 1)) / 2);
 //    int r = h.row;
 //    int s = -q - r;

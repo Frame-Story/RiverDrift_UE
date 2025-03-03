@@ -97,12 +97,12 @@ struct FOffsetCoord
 public:
     
     UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
-    int col;
+    int x;//renamed from col
     UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
-    int row;
-    FOffsetCoord() : col(0), row(0) {}
+    int y; //renamed from row
+    FOffsetCoord() : x(0), y(0) {}
 
-    FOffsetCoord(int col_, int row_) : col(col_), row(row_) {}
+    FOffsetCoord(int col_, int row_) : x(col_), y(row_) {}
     //FOffsetCoord& operator=(const FOffsetCoord& other);
         
 };
@@ -114,9 +114,9 @@ struct FDoubledCoord
     GENERATED_BODY()
 
     UPROPERTY(BlueprintReadWrite)
-    int col;
+    int col; //should be x, though I doubt I'm even using doubledCords
     UPROPERTY(BlueprintReadWrite)
-    int row;
+    int row; //should be y
     FDoubledCoord(int col_, int row_) : col(col_), row(row_) {}
     FDoubledCoord() : col(0), row(0) {}
 
@@ -148,6 +148,9 @@ struct FOrientation
     double b3;
     UPROPERTY(BlueprintReadWrite)
     double start_angle;
+
+    //default orientation should be POINTY top, I don't think it is rn
+
     FOrientation(double f0_, double f1_, double f2_, double f3_, double b0_, double b1_, double b2_, double b3_, double start_angle_) : f0(f0_), f1(f1_), f2(f2_), f3(f3_), b0(b0_), b1(b1_), b2(b2_), b3(b3_), start_angle(start_angle_) {}
     //FOrientation() : f0(0), f1(0), f2(0), f3(0), b0(0), b1(0), b2(0), b3(0), start_angle(0) {} //I want my default orientation to be pointy, feel free to rewrite this according to your needs
     FOrientation() : f0(sqrt(3.0)), f1(sqrt(3.0) / 2.0), f2(0.0), f3(3.0 / 2.0), b0(sqrt(3.0) / 3.0), b1( -1.0 / 3.0), b2(0.0), b3(2.0 / 3.0), start_angle(0.5) {} //copy pasted from the def of layout_pointy
@@ -238,7 +241,7 @@ public:
     static FDoubledCoord doubled_from_cube(FHex h);
     
     static  FHex doubled_to_cube(FDoubledCoord h);
-    //r is point top
+    //r is pointy top
 
     //static FOffsetCoord roffset_from_cube(int offset, FHex h);
 

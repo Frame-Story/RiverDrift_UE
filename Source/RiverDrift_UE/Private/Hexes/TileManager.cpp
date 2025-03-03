@@ -37,17 +37,18 @@ void ATileManager::InsertIntoMap(int q, int r, int s, ASpawnableTile* tile)
 
 void ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format) {
 
-	UE_LOGFMT(LogTemp, Log, "placetile_XY called || offset coords x {0} y {1} ", offsetCoord.col, offsetCoord.row);
+	UE_LOGFMT(LogTemp, Log, "placetile_XY called || offset coords x {0} y {1} ", offsetCoord.x, offsetCoord.y);
 	//FTileData tileData = format.GetRow<FTileData>("");
 	FHex cubicCoord = UHexLibrary::offset_to_cube(offsetCoord); //static instantiation of FHex? Dunaganq
 
-	ATileManager::PlaceTile_QRS(cubicCoord, format);
+	//ATileManager::PlaceTile_QRS(cubicCoord, format);
 
-	//ASpawnableTile* tile = ASpawnableTile::CreateTile(x, y, format, this);
+	ASpawnableTile* tile = ASpawnableTile::CreateTile(offsetCoord, format, this);
 	
 	
 }
 
+//'ultimate'/internal version
 void ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 {
 
@@ -56,6 +57,13 @@ void ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 	ASpawnableTile* tile = ASpawnableTile::CreateTile(hexCoord, format, this);
 
 }
+
+
+void ATileManager::PlaceNeighbors(ASpawnableTile* tile) {
+	//tile->Neighbors
+
+}
+
 
 void ATileManager::BuildGrid_Implementation()
 {
@@ -67,8 +75,8 @@ void ATileManager::BuildGrid_Implementation()
 
 
 
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
+		for (int i = -9; i < 10; i++) {
+			for (int j = -9; j < 10; j++) {
 
 				bool bTileIsValid = false;
 				FTileData f = this->SelectRandomTile(&bTileIsValid);

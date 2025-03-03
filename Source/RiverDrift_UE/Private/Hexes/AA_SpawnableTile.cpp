@@ -17,16 +17,13 @@ ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, FTileData prefab, AAct
 
 	FOffsetCoord offset = UHexLibrary::offset_from_cube(h);
 
-	ASpawnableTile* tile = CreateTile(offset.col, offset.row, prefab, _owner);
+	ASpawnableTile* tile = CreateTile( offset, prefab, _owner);
 
 	return tile;
-
 }
 
-
-
 //should standardize your calls
-ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AActor* _owner)
 {
 	//UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
 
@@ -37,14 +34,18 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActo
 	SpawnInfo.ObjectFlags |= RF_Transient;
 
 
-
 	FVector worldPos;
-	worldPos.X = (x + y * 0.5f - y / 2) * (prefab.cellSize * 2.0f);
-	worldPos.Y = y * (prefab.cellWidth * 1.5f);
+	
+	worldPos.X = (((c.x - abs(c.y) * 0.5f) + abs(c.y) / 2) * (prefab.cellSize * 2.0f)) ;//currently hard coded for even-r offsetting
+
+	worldPos.Y = (c.y * (prefab.cellWidth * 1.5f));
 	worldPos.Z = 0.0f;
+
+	//worldPos.X = c.y < 0 ? worldPos.X: worldPos.X *-1;
 
 	FTransform transform;
 
+	
 	tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
 		ASpawnableTile::StaticClass(), worldPos, FRotator::ZeroRotator, SpawnInfo);
 	
@@ -77,7 +78,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActo
 	}
 	tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
 
-	tile->offsetCoord = FOffsetCoord::FOffsetCoord(x, y);
+	tile->offsetCoord = FOffsetCoord::FOffsetCoord(c.x/*-c.y/2*/, c.y);//-c.y/2 from catlike
 
 	//set tile's coordinates
 	tile->HexCoord = UHexLibrary::offset_to_cube(tile->offsetCoord);
@@ -86,6 +87,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(int x, int y, FTileData prefab, AActo
 
 	return tile;
 }
+
 
 // Sets default values
 ASpawnableTile::ASpawnableTile()
