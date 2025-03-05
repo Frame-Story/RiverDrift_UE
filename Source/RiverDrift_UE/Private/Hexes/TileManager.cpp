@@ -144,7 +144,7 @@ void ATileManager::BuildGrid_Implementation()
 
 
 			bool bTileIsValid = false;
-			FTileData f = this->SelectRandomTileType(&bTileIsValid);
+			FTileData f = this->SelectRandomTileType(bTileIsValid);
 
 			if (bTileIsValid) {
 				this->PlaceTile_XY(FOffsetCoord(i, 0), f);
@@ -181,7 +181,7 @@ void ATileManager::BuildGrid_Implementation()
 }
 
 
-FTileData ATileManager::SelectRandomTileType(bool* valid)
+FTileData ATileManager::SelectRandomTileType(bool& valid)
 {
 	FTileData tile;
 	if (this->TileDataTable) {
@@ -194,7 +194,7 @@ FTileData ATileManager::SelectRandomTileType(bool* valid)
 		UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
 
 		tile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
-		*valid = true;
+		valid = true;
 		return tile;
 	}
 	else {

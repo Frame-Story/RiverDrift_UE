@@ -29,13 +29,13 @@ public:
 	//UDA_TileBase* TileFormat;
 
 	static ASpawnableTile* dummy_tile;
-	UPROPERTY(BlueprintCallable)
-	bool TileIsFilled(FHex hex, ASpawnableTile* &tile); //expose - change to isFilled
-	UPROPERTY(BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
+	bool TileIsFilled(FHex hex, ASpawnableTile*& tile); //expose - change to isFilled
+	UFUNCTION(BlueprintCallable)
 	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
 
-	UPROPERTY(BlueprintCallable)
-	FTileData SelectRandomTileType(bool* valid);//change to selectRandomTileFormat
+	UFUNCTION(BlueprintCallable)
+	FTileData SelectRandomTileType(bool& valid);//change to selectRandomTileFormat
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
