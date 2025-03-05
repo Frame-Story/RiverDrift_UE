@@ -30,7 +30,7 @@ void ATileManager::BeginPlay()
 }
 
 //bool ATileManager::tileExists(FHex hex, ASpawnableTile* tile)
-bool ATileManager::tileExists(FHex hex, ASpawnableTile* &tile)
+bool ATileManager::TileIsFilled(FHex hex, ASpawnableTile* &tile)
 {
 	FVector3f vector = FVector3f(hex.q, hex.r, hex.s);
 	tile = RD_TileMap.FindRef(vector);
@@ -61,8 +61,8 @@ void ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format) {
 ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 {
 	ASpawnableTile* tile;
-	if (!tileExists(hexCoord, tile)) {
-		UE_LOGFMT(LogTemp, Warning, "tilemanager is trying to place a tile at a coordinate that doesn't yet exist. Do we want to allow this? should this even be possible? coords are {0} ", *hexCoord.ToString());
+	if (!TileIsFilled(hexCoord, tile)) {
+		UE_LOGFMT(LogTemp, Warning, "tilemanager is trying to place a tile at a coordinate that doesn't yet exist. we likely only want to allow this when the tile man is placing them directly (rather than from input by player) {0} ", *hexCoord.ToString());
 		//TODO: fill out
 		//should only 
 		tile = ASpawnableTile::CreateTile(hexCoord, format, this);
@@ -72,16 +72,16 @@ ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 		//it already exists, so upgrade it.
 		tile->UpgradeTile(format);
 		ASpawnableTile* temp;
-		if (tileExists(tile->HexCoord, temp)) {
+
+
+
+		if (TileIsFilled(tile->HexCoord, temp)) {//sort of redundant check, just needed to pull a ref to the tileMan's stored tile
+			//intended for checking whether tileMan is properly receiving updates to tiles.
 			if (tile->TileType.ETileType != temp->TileType.ETileType) {
 				UE_LOGFMT(LogTemp, Error, 
 					"ERROR, we've upgraded the tile but the tilemanager's storage doesn't seem to have gotten the memo. Thislikely indicates a deeper issue with memory management");
 
 			}
-		}
-		else {
-			UE_LOGFMT(LogTemp, Log, "Player is trying to place a tile at a coordinate that doesn't yet exist. Do we want to allow this? should this even be possible? coords are {0} ", *hexCoord.ToString());
-
 		}
 	}
 
@@ -115,7 +115,7 @@ void ATileManager::PlaceNeighbors(ASpawnableTile* tile) {
 		ASpawnableTile* neighbor = nullptr;
 		FHex neighborCoord = UHexLibrary::hex_add(tile->HexCoord, direction);
 		UE_LOGFMT(LogTemp, Log, "direction : {0} neighbor's coords: {1} ", *direction.ToString(), *neighborCoord.ToString());
-		if(!tileExists(neighborCoord, neighbor)) {//if it doesn't exist, then we need to add it
+		if(!TileIsFilled(neighborCoord, neighbor)) {//if it doesn't exist, then we need to add it
 			
 			neighbor = CreateBlankTile(neighborCoord);
 		} else  //if it already exists, I don't think we need to do anything
@@ -144,7 +144,7 @@ void ATileManager::BuildGrid_Implementation()
 
 
 			bool bTileIsValid = false;
-			FTileData f = this->SelectRandomTile(&bTileIsValid);
+			FTileData f = this->SelectRandomTileType(&bTileIsValid);
 
 			if (bTileIsValid) {
 				this->PlaceTile_XY(FOffsetCoord(i, 0), f);
@@ -181,7 +181,7 @@ void ATileManager::BuildGrid_Implementation()
 }
 
 
-FTileData ATileManager::SelectRandomTile(bool* valid)
+FTileData ATileManager::SelectRandomTileType(bool* valid)
 {
 	FTileData tile;
 	if (this->TileDataTable) {

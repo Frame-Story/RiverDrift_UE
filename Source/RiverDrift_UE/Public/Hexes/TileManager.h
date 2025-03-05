@@ -17,17 +17,29 @@ class RIVERDRIFT_UE_API ATileManager : public AActor
 	GENERATED_BODY()
 	
 public:	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> TileDataTable;
+
+
+
 	// Sets default values for this actor's properties
 	ATileManager();
 
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UDataTable> TileDataTable;
 	//UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	//UDA_TileBase* TileFormat;
 
+	static ASpawnableTile* dummy_tile;
+	UPROPERTY(BlueprintCallable)
+	bool TileIsFilled(FHex hex, ASpawnableTile* &tile); //expose - change to isFilled
+	UPROPERTY(BlueprintCallable)
+	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
+
+	UPROPERTY(BlueprintCallable)
+	FTileData SelectRandomTileType(bool* valid);//change to selectRandomTileFormat
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 protected:
-
-
 	//variables
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
@@ -40,25 +52,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	static ASpawnableTile* dummy_tile;
-	bool tileExists(FHex hex, ASpawnableTile* &tile); //expose - change to isFilled
-	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
-
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void BuildGrid(); //remove
+	void BuildGrid(); //implemented in c++ as BuildGrid_Implementation - able to be overriden by blueprints - largely placeholder until player input is working
 
 	UFUNCTION(BlueprintCallable) 
-	void PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format); //c++ func is PlaceTile_XY_Implementation
+	void PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format);
 	UFUNCTION(BlueprintCallable)
 	ASpawnableTile* PlaceTile_QRS(FHex hexCoord, FTileData format);
 	ASpawnableTile* CreateBlankTile(FHex hexCoord);
 
 	void PlaceNeighbors(ASpawnableTile* tile);
-
-public:	
-	FTileData SelectRandomTile(bool* valid);//change to selectRandomTileFormat
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };
