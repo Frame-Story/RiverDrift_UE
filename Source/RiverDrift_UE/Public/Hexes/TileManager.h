@@ -41,12 +41,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	static ASpawnableTile* dummy_tile;
-	bool tileExists(FHex hex, ASpawnableTile* &tile);
-	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile);
+	bool tileExists(FHex hex, ASpawnableTile* &tile); //expose - change to isFilled
+	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
 
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void BuildGrid();
+	void BuildGrid(); //remove
 
 	UFUNCTION(BlueprintCallable) 
 	void PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format); //c++ func is PlaceTile_XY_Implementation
@@ -57,7 +57,7 @@ protected:
 	void PlaceNeighbors(ASpawnableTile* tile);
 
 public:	
-	FTileData SelectRandomTile(bool* valid);
+	FTileData SelectRandomTile(bool* valid);//change to selectRandomTileFormat
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

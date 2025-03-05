@@ -62,6 +62,9 @@ ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 {
 	ASpawnableTile* tile;
 	if (!tileExists(hexCoord, tile)) {
+		UE_LOGFMT(LogTemp, Warning, "tilemanager is trying to place a tile at a coordinate that doesn't yet exist. Do we want to allow this? should this even be possible? coords are {0} ", *hexCoord.ToString());
+		//TODO: fill out
+		//should only 
 		tile = ASpawnableTile::CreateTile(hexCoord, format, this);
 		InsertIntoMap(hexCoord.q, hexCoord.r, hexCoord.s, tile);
 	}
