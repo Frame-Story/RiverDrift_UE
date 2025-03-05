@@ -21,7 +21,7 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
-	TArray<FHex> Neighbors;
+	TArray<TObjectPtr<ASpawnableTile>> Neighbors;//do we need to keep this as an array of objects? storing coords might take less memory, and looking up into hexmap should(?) be a trivial expense
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
 	FHex HexCoord;
@@ -37,6 +37,8 @@ public:
 	static ASpawnableTile* CreateTile(const FHex& h, FTileData prefab, AActor* _owner);
 
 	static ASpawnableTile* CreateTile(FOffsetCoord c, FTileData prefab, AActor* _owner);
+
+	void UpgradeTile(FTileData NewType);
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

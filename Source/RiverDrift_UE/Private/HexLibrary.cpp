@@ -14,10 +14,10 @@ using std::vector;
 #define M_PI 3.14159265358979323846
 #endif
 
-//format is [l/r] first followed by [u/d/c] [u(p)/d(own)/c(ardinal)]
+//format is [u/d/c] [u(p)/d(own)/c(ardinal)] first followed by [l/r] 
 //consider adding directions aliases eg const FHex UHexLibrary::dir_right_up = FHex(1,-1,0) - also consider re-ordering format
 
-//starts rc, moves to ru, continues counterclockwise until rd
+//starts cr, moves to ur, continues counterclockwise until dr
 const TArray<FHex> UHexLibrary::hex_directions = { FHex(1, 0, -1), FHex(1, -1, 0), FHex(0, -1, 1), FHex(-1, 0, 1), FHex(-1, 1, 0), FHex(0, 1, -1) };
 const FOrientation UHexLibrary::layout_pointy = FOrientation(sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
 const FOrientation UHexLibrary::layout_flat = FOrientation(3.0 / 2.0, 0.0, sqrt(3.0) / 2.0, sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, sqrt(3.0) / 3.0, 0.0);

@@ -26,12 +26,22 @@ public:
 	//UDA_TileBase* TileFormat;
 
 protected:
+
+
+	//variables
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	TMap<FVector3f, ASpawnableTile* > RD_TileMap; //I think this is actually unneeded?
+
+	
+	//functions
+	
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	//TMap<FVector3f , ASpawnableTile* > RD_HexMap; //I think this is actually unneeded?
-
+	static ASpawnableTile* dummy_tile;
+	bool tileExists(FHex hex, ASpawnableTile* &tile);
 	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile);
 
 
@@ -41,7 +51,8 @@ protected:
 	UFUNCTION(BlueprintCallable) 
 	void PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format); //c++ func is PlaceTile_XY_Implementation
 	UFUNCTION(BlueprintCallable)
-	void PlaceTile_QRS(FHex hexCoord, FTileData format);
+	ASpawnableTile* PlaceTile_QRS(FHex hexCoord, FTileData format);
+	ASpawnableTile* CreateBlankTile(FHex hexCoord);
 
 	void PlaceNeighbors(ASpawnableTile* tile);
 

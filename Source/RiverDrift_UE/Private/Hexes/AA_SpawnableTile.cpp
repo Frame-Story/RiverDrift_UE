@@ -52,7 +52,6 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	tile->TileType = prefab;
 	//tile->TileType = prefab.ETileType;
 
-	UE_LOGFMT(LogTemp, Log, "worldpos is: {0}", worldPos.ToString());
 
 
 	//UPaperSpriteComponent* SpriteComponent = NewObject<UPaperSpriteComponent>(tile, UPaperSpriteComponent::StaticClass());
@@ -83,9 +82,18 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	//set tile's coordinates
 	tile->HexCoord = UHexLibrary::offset_to_cube(tile->offsetCoord);
 
+
 	//prefab.sprite
 
 	return tile;
+}
+
+void ASpawnableTile::UpgradeTile(FTileData NewType)
+{
+	this->TileType = NewType;
+	SpriteComponent->SetSprite(NewType.sprite);
+
+	
 }
 
 

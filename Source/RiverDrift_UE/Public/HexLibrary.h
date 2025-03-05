@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Logging/StructuredLog.h"
 #include "HexLibrary.generated.h"
 
 /**
@@ -34,6 +35,11 @@ public:
     }
 
     FHex() : q(0), r(0), s(0) {}
+    FString ToString() {
+
+        return FString::Printf(TEXT("q: %d r: %d s: %d"), q, r, s);
+            //("q: " + q + " r: " + r + " s: " + s);
+    }
 
     //bool operator==(const FHex& Other) const {
     //    return q == Other.q && r == Other.r && s == Other.s;

@@ -29,9 +29,18 @@ void ATileManager::BeginPlay()
 
 }
 
+//bool ATileManager::tileExists(FHex hex, ASpawnableTile* tile)
+bool ATileManager::tileExists(FHex hex, ASpawnableTile* &tile)
+{
+	FVector3f vector = FVector3f(hex.q, hex.r, hex.s);
+	tile = RD_TileMap.FindRef(vector);
+
+	return !(tile == nullptr);
+}
+
 void ATileManager::InsertIntoMap(int q, int r, int s, ASpawnableTile* tile)
 {
-	//RD_HexMap.Add(FVector3f(q, r, s), tile); //removing hexmap for now
+	RD_TileMap.Add(FVector3f(q, r, s), tile); //removing hexmap for now
 }
 
 
@@ -41,27 +50,82 @@ void ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format) {
 	//FTileData tileData = format.GetRow<FTileData>("");
 	FHex cubicCoord = UHexLibrary::offset_to_cube(offsetCoord); //static instantiation of FHex? Dunaganq
 
-	//ATileManager::PlaceTile_QRS(cubicCoord, format);
+	ATileManager::PlaceTile_QRS(cubicCoord, format);
 
-	ASpawnableTile* tile = ASpawnableTile::CreateTile(offsetCoord, format, this);
-	
-	
+	//ASpawnableTile* tile = ASpawnableTile::CreateTile(offsetCoord, format, this);
 }
 
+
+
 //'ultimate'/internal version
-void ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
+ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 {
+	ASpawnableTile* tile;
+	if (!tileExists(hexCoord, tile)) {
+		tile = ASpawnableTile::CreateTile(hexCoord, format, this);
+		InsertIntoMap(hexCoord.q, hexCoord.r, hexCoord.s, tile);
+	}
+	else {
+		//it already exists, so upgrade it.
+		tile->UpgradeTile(format);
+		ASpawnableTile* temp;
+		if (tileExists(tile->HexCoord, temp)) {
+			if (tile->TileType.ETileType != temp->TileType.ETileType) {
+				UE_LOGFMT(LogTemp, Error, 
+					"ERROR, we've upgraded the tile but the tilemanager's storage doesn't seem to have gotten the memo. Thislikely indicates a deeper issue with memory management");
+
+			}
+		}
+		else {
+			UE_LOGFMT(LogTemp, Log, "Player is trying to place a tile at a coordinate that doesn't yet exist. Do we want to allow this? should this even be possible? coords are {0} ", *hexCoord.ToString());
+
+		}
+	}
 
 	UE_LOGFMT(LogTemp, Log, "placetile_QRS called ||  cubic coords q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
 
-	ASpawnableTile* tile = ASpawnableTile::CreateTile(hexCoord, format, this);
+	PlaceNeighbors(tile);
+	return tile;
+}
 
+ASpawnableTile* ATileManager::CreateBlankTile(FHex hexCoord)
+{
+	UE_LOGFMT(LogTemp, Log, "creating blank tile at coords: q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
+
+
+	ASpawnableTile* tile = ASpawnableTile::CreateTile(hexCoord, 
+		*this->TileDataTable->FindRow<FTileData>("Blank", "blank placement in PlaceNeighbors()"), this);
+	InsertIntoMap(hexCoord.q, hexCoord.r, hexCoord.s, tile);
+	return tile;
 }
 
 
 void ATileManager::PlaceNeighbors(ASpawnableTile* tile) {
-	//tile->Neighbors
+	UE_LOGFMT(LogTemp, Log, " ");
 
+	UE_LOGFMT(LogTemp, Log, "placing neighbors around coords: {0} ", tile->HexCoord.ToString());
+
+	for (FHex direction : UHexLibrary::hex_directions) {
+		//starting directly to the right ("cardinal right" or "cr", moves counterlockwise
+
+		//check if tile exists
+		ASpawnableTile* neighbor = nullptr;
+		FHex neighborCoord = UHexLibrary::hex_add(tile->HexCoord, direction);
+		UE_LOGFMT(LogTemp, Log, "direction : {0} neighbor's coords: {1} ", *direction.ToString(), *neighborCoord.ToString());
+		if(!tileExists(neighborCoord, neighbor)) {//if it doesn't exist, then we need to add it
+			
+			neighbor = CreateBlankTile(neighborCoord);
+		} else  //if it already exists, I don't think we need to do anything
+		{
+			UE_LOGFMT(LogTemp, Log, "tile already exists, not creating a blank tile but instead pulling from map. " );
+
+		}
+		if (IsValid(neighbor)) {//shouldn't be necessary, as theoretically we're setting it by now. but just in case
+			tile->Neighbors.Add(neighbor);
+		} else {
+			UE_LOGFMT(LogTemp, Error, "ERROR: neighbor reference in PlaceNeighbord() is somehow still null. double check your logic");
+		}
+	}
 }
 
 
@@ -71,29 +135,40 @@ void ATileManager::BuildGrid_Implementation()
 	
 	if (this->TileDataTable) {
 
-		FPermissionListOwners names =  this->TileDataTable->GetRowNames();
 
 
+		for (int i = 0; i < 10; i++) {
 
-		for (int i = -9; i < 10; i++) {
-			for (int j = -9; j < 10; j++) {
 
-				bool bTileIsValid = false;
-				FTileData f = this->SelectRandomTile(&bTileIsValid);
+			bool bTileIsValid = false;
+			FTileData f = this->SelectRandomTile(&bTileIsValid);
 
-				if (bTileIsValid) {
-					this->PlaceTile_XY(FOffsetCoord(i,j), f);
-				}
-				else {
-					UE_LOGFMT(LogTemp, Log, "bTileIsValid false, didn't place");
-
-				}
-
+			if (bTileIsValid) {
+				this->PlaceTile_XY(FOffsetCoord(i, 0), f);
+			}
+			else {
+				UE_LOGFMT(LogTemp, Error, "bTileIsValid false, didn't place");
 
 			}
+
+			//for (int j = -9; j < 10; j++) {
+
+			//	bool bTileIsValid = false;
+			//	FTileData f = this->SelectRandomTile(&bTileIsValid);
+
+			//	if (bTileIsValid) {
+			//		this->PlaceTile_XY(FOffsetCoord(i,j), f);
+			//	}
+			//	else {
+			//		UE_LOGFMT(LogTemp, Log, "bTileIsValid false, didn't place");
+
+			//	}
+			//}
+
+			UE_LOGFMT(LogTemp, Display, " placing one tile --------------- \n");
+			UE_LOGFMT(LogTemp, Display, "  \n");
+
 		}
-
-
 
 	}
 	else {
@@ -110,12 +185,12 @@ FTileData ATileManager::SelectRandomTile(bool* valid)
 
 
 		FPermissionListOwners names = this->TileDataTable->GetRowNames();
-		int rand = FMath::RandRange(0, names.Num() - 1);
+		int rand = FMath::RandRange(1, names.Num() - 1);//excluding first row to keep blank tiles separate
 		FName name = names[rand];
 		//auto temp = 
 		UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
 
-		tile = *this->TileDataTable->FindRow<FTileData>(name, "");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
+		tile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 		*valid = true;
 		return tile;
 	}
