@@ -1,0 +1,81 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Templates/SubclassOf.h"
+#include "GameFramework/PlayerController.h"
+#include "RD_PlayerController.generated.h"
+
+class UNiagaraSystem;
+class UInputMappingContext;
+class UInputAction;
+/**
+ * 
+ */
+UCLASS()
+class RIVERDRIFT_UE_API ARD_PlayerController : public APlayerController
+{
+	GENERATED_BODY()
+
+
+
+	// --- VARIABLES ---
+
+public:
+	ARD_PlayerController();
+
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* DefaultMappingContext;
+
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SelectTileClickAction;
+
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SelectTileTouchAction;
+
+
+
+	///TODO: add input actions for move to tile and place tile
+	///** Jump Input Action */
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	//UInputAction* SelectTileClickAction;
+
+	///** Jump Input Action */
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	//UInputAction* SelectTileTouchAction;
+
+	///** Jump Input Action */
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	//UInputAction* SelectTileClickAction;
+
+	///** Jump Input Action */
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	//UInputAction* SelectTileTouchAction;
+
+
+
+protected:
+	/** True if the controlled character should navigate to the mouse cursor. */
+	//uint32 bMoveToMouseCursor : 1;
+
+	virtual void SetupInputComponent() override;
+
+	// To add mapping context
+	virtual void BeginPlay();
+
+	/** Input handlers for SetDestination action. */
+	void OnInputStarted();
+	void OnSelectTileTriggered();
+	void OnTouchTriggered();
+	void OnTouchReleased();
+
+private:
+
+	bool bPlayerIsTouchingScreen; // Is it a touch device
+
+
+};

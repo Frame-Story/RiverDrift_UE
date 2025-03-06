@@ -82,6 +82,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	//set tile's coordinates
 	tile->HexCoord = UHexLibrary::offset_to_cube(tile->offsetCoord);
 
+	
 
 	//prefab.sprite
 
