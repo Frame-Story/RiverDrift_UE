@@ -1,10 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "HexLibrary.h"
 #include "Hexes/TileManager.h"
 #include "Hexes/AA_SpawnableTile.h"
-#include "HexLibrary.h"
 #include "Hexes/TileData.h"
+#include "Core/RD_GameMode.h"
 #include "Rendering/RenderingSpatialHash.h"
 #include "Math/MathFwd.h"
 #include "Logging/StructuredLog.h"
@@ -26,7 +27,9 @@ void ATileManager::BeginPlay()
 
 	BuildGrid();
 	UE_LOGFMT(LogTemp, Log, "tilemanager begin play called from cpp class");
-	GetNextTileToPlace(*NextTileToPlace);
+	//GetNextTileToPlace();
+	NextTileToPlace = SelectRandomTileType();
+	Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode())->TileManager = this;
 
 }
 
@@ -146,15 +149,15 @@ void ATileManager::BuildGrid_Implementation()
 
 			bool bTileIsValid = false;
 			FTileData f;
-			this->SelectRandomTileType(f, bTileIsValid);
+			f = this->SelectRandomTileType();
 
-			if (bTileIsValid) {
-				this->PlaceTile_XY(FOffsetCoord(i, 0), f);
-			}
-			else {
-				UE_LOGFMT(LogTemp, Error, "bTileIsValid false, didn't place");
+			this->PlaceTile_XY(FOffsetCoord(i, 0), f);
+			//if (isempty(f)) {
+			//}
+			//else {
+			//	UE_LOGFMT(LogTemp, Error, "bTileIsValid false, didn't place");
 
-			}
+			//}
 
 			//for (int j = -9; j < 10; j++) {
 
@@ -183,8 +186,9 @@ void ATileManager::BuildGrid_Implementation()
 }
 
 
-void ATileManager::SelectRandomTileType(FTileData& OutTile, bool& valid)
+FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 {
+	FTileData foundTile;
 	if (this->TileDataTable) {
 
 		FPermissionListOwners names = this->TileDataTable->GetRowNames();
@@ -193,13 +197,12 @@ void ATileManager::SelectRandomTileType(FTileData& OutTile, bool& valid)
 
 		UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
 
-		OutTile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
-		valid = true;
+		foundTile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 	}
 	else {
-		UE_LOGFMT(LogTemp, Error, "ERROR: TileManager.TileDataTable ref not valid, make sure you set it");
-		valid = false;
+		UE_LOGFMT(LogTemp, Fatal, "ERROR: TileManager.TileDataTable ref not valid, make sure you set it");
 	}
+	return foundTile;
 	
 }
 
@@ -221,15 +224,23 @@ void ATileManager::SelectRandomTileType(FTileData& OutTile, bool& valid)
 void ATileManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-void ATileManager::GetNextTileToPlace(FTileData& OutTileData, bool pullNext)
+FTileData ATileManager::GetNextTileToPlace(bool generateNew)
 {
-	FTileData* lastTile = NextTileToPlace;
-	if (pullNext) {
-		bool b;
-		SelectRandomTileType(*NextTileToPlace, b);
+	if (generateNew) {
+		NextTileToPlace = SelectRandomTileType();
 	}
+	return NextTileToPlace;
+
+	//if (IsValid(NextTileToPlace)) {
+
+	//}
+	//FTileData lastTile = NextTileToPlace;
+	//if (pullNext) {
+	//	NextTileToPlace =  SelectRandomTileType();//pull the value, convert it to pointer, and store the ref
+	//}
+
+	//return lastTile;
 }
 

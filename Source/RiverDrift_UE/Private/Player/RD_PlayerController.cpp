@@ -40,7 +40,7 @@ void ARD_PlayerController::BeginPlay()
 		UE_LOGFMT(LogTemp, Log, "TileManager is properly set");
 	}
 	else {
-		UE_LOGFMT(LogTemp, Warning, "TileManager is properly INVALID");		
+		UE_LOGFMT(LogTemp, Warning, "TileManager is INVALID");		
 	}
 }
 
@@ -145,10 +145,10 @@ void ARD_PlayerController::ActivateTile()
 		TileManager = GameMode->TileManager;
 	}
 
+		FTileData format = TileManager->GetNextTileToPlace();
 	switch (CurrentSelectedTile->TileType.ETileType) {
 	case(ETileType::TE_Blank):
-
-		CurrentSelectedTile->UpgradeTile(TileManager->GetNextTileToPlace());
+		CurrentSelectedTile->UpgradeTile(format);
 		UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
 		break;
 	case(ETileType::TE_River):

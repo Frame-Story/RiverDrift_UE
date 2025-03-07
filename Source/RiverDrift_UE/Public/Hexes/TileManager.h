@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../HexLibrary.h"
+#include "../Hexes/AA_SpawnableTile.h"
 #include "TileManager.generated.h"
 
 
 class ASpawnableTile;
 struct FHex;
 struct FOffsetCoord;
-struct FTileData;
+//struct FTileData;
 
 UCLASS()
 class RIVERDRIFT_UE_API ATileManager : public AActor
@@ -37,17 +38,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
 
-	void SelectRandomTileType(FTileData& tile, bool& valid);//change to selectRandomTileFormat
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FTileData SelectRandomTileType( /*bool& valid*/);//change to selectRandomTileFormat
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void GetNextTileToPlace(FTileData& OutTileData, bool pullNext = true);
+	//returns the tile that the tilemanager is currently going to return next. defaults to generating a new one first
+	FTileData GetNextTileToPlace(bool generateNew = true);
 
 protected:
 	//variables
 
-
-	FTileData* NextTileToPlace;
+	UPROPERTY(VisibleInstanceOnly)
+	FTileData NextTileToPlace; //needs to be a pointer as c++ can't tell how to allocate its size
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	TMap<FVector3f, ASpawnableTile* > RD_TileMap; //I think this is actually unneeded?
