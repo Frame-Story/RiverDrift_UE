@@ -12,6 +12,8 @@ class UNiagaraSystem;
 class UInputMappingContext;
 class UInputAction;
 class ASpawnableTile;
+class ATileManager;
+class ARD_GameMode;
 
 /**
  * 
@@ -37,8 +39,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SelectTileTouchAction;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, category = "Tiles")
-	FHex CurrentHex;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, category = "Tiles")
 	ASpawnableTile* CurrentSelectedTile;
@@ -82,6 +82,11 @@ protected:
 	void OnSelectTileTriggered();
 	void OnTouchTriggered();
 	void OnTouchReleased();
+
+	void ActivateTile();
+
+	TObjectPtr<ATileManager> TileManager;
+	TObjectPtr<ARD_GameMode> GameMode;
 
 private:
 

@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../HexLibrary.h"
 #include "TileManager.generated.h"
 
-struct FTileData;
+
 class ASpawnableTile;
 struct FHex;
 struct FOffsetCoord;
+struct FTileData;
 
 UCLASS()
 class RIVERDRIFT_UE_API ATileManager : public AActor
@@ -19,6 +21,7 @@ class RIVERDRIFT_UE_API ATileManager : public AActor
 public:	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDataTable> TileDataTable;
+
 
 
 
@@ -34,13 +37,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
 
-	UFUNCTION(BlueprintCallable)
-	FTileData SelectRandomTileType(bool& valid);//change to selectRandomTileFormat
+	void SelectRandomTileType(FTileData& tile, bool& valid);//change to selectRandomTileFormat
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void GetNextTileToPlace(FTileData& OutTileData, bool pullNext = true);
+
 protected:
 	//variables
+
+
+	FTileData* NextTileToPlace;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	TMap<FVector3f, ASpawnableTile* > RD_TileMap; //I think this is actually unneeded?

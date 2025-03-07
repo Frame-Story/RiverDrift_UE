@@ -9,11 +9,23 @@
 /**
  * 
  */
+class ATileManager;
+
 UCLASS()
 class RIVERDRIFT_UE_API ARD_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+	// --- VARS ---
+
+public:
+
+	UPROPERTY(EditInstanceOnly)
+	TObjectPtr<ATileManager> TileManager;
+	// --- FUNCTIONS ---
+
 public:
 	ARD_GameMode();
+
+
 };

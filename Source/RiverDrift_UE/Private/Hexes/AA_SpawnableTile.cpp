@@ -91,9 +91,9 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 
 void ASpawnableTile::UpgradeTile(FTileData NewType)
 {
+	UE_LOGFMT(LogTemp, Log, "It should've called upgrade");
 	this->TileType = NewType;
 	SpriteComponent->SetSprite(NewType.sprite);
-
 	
 }
 

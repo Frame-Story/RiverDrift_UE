@@ -3,6 +3,7 @@
 
 #include "Core/RD_GameMode.h"
 #include "Player/RD_PlayerController.h"
+#include "Hexes/TileManager.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARD_GameMode::ARD_GameMode()

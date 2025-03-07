@@ -2,18 +2,18 @@
 
 
 #include "Player/RD_PlayerController.h"
-#include "GameFramework/Pawn.h"
-//#include "Blueprint/AIBlueprintHelperLibrary.h"
-//#include "TopDownRefCharacter.h"//change to RD player character when we have it
-#include "Engine/World.h"
 #include "Logging/StructuredLog.h"
-#include "HexLibrary.h"
-#include "Hexes/AA_SpawnableTile.h"
 #include "EnhancedInputComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/Pawn.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Engine/World.h"
 #include "Engine/LocalPlayer.h"
+#include "HexLibrary.h"
+#include "Hexes/AA_SpawnableTile.h"
+#include "Core/RD_GameMode.h"
+#include "Hexes/TileManager.h"
 
 ARD_PlayerController::ARD_PlayerController()
 {
@@ -25,6 +25,23 @@ void ARD_PlayerController::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+
+	GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
+	TileManager = GameMode->TileManager;
+	if (IsValid(GameMode)) {
+		UE_LOGFMT(LogTemp, Log, "gamemode is properly set");
+	}
+	else {
+		UE_LOGFMT(LogTemp, Warning, "gamemode is properly INVALID");
+
+	}
+	if (IsValid(TileManager)) {
+		UE_LOGFMT(LogTemp, Log, "TileManager is properly set");
+	}
+	else {
+		UE_LOGFMT(LogTemp, Warning, "TileManager is properly INVALID");		
+	}
 }
 
 void ARD_PlayerController::SetupInputComponent()
@@ -85,19 +102,7 @@ void ARD_PlayerController::OnSelectTileTriggered()
 				if (CurrentSelectedTile == tile) {
 					UE_LOGFMT(LogTemp, Log, "player has clicked current tile twice over. activating that tile");
 					
-					switch (tile->TileType.ETileType) {
-						case(ETileType::TE_Blank):
-							UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
-							break;
-						case(ETileType::TE_River):
-							UE_LOGFMT(LogTemp, Log, "player activated River tile, move to tile");
-							break;
-						default:
-							UE_LOGFMT(LogTemp, Log, 
-								"player activated a different tile (tiletype {0}, do we want to do something different here? should it be interactable?", 
-								UEnum::GetValueAsString(tile->TileType.ETileType));
-							break;
-					}
+					ActivateTile();
 				}
 				else {
 					UE_LOGFMT(LogTemp, Log, "player has clicked a tile other than the currently selected tile. selecting that tile");
@@ -110,7 +115,6 @@ void ARD_PlayerController::OnSelectTileTriggered()
 			}
 		}
 		else {
-
 			UE_LOGFMT(LogTemp, Warning, "player tile raycast somehow returned an actor that isn't a tile. something is wrong with your collisions");
 		}
 	}
@@ -120,6 +124,7 @@ void ARD_PlayerController::OnSelectTileTriggered()
 	}
 }
 
+
 void ARD_PlayerController::OnTouchTriggered()
 {
 	UE_LOGFMT(LogTemp, Log, "Player selected a tile through a screen touch rather than a click, do we need to do anything differently here?");
@@ -128,4 +133,32 @@ void ARD_PlayerController::OnTouchTriggered()
 
 void ARD_PlayerController::OnTouchReleased()
 {
+}
+
+void ARD_PlayerController::ActivateTile()
+{
+	
+	if (!IsValid(GameMode)) {
+		GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
+	}
+	if (!IsValid(TileManager)) {
+		TileManager = GameMode->TileManager;
+	}
+
+	switch (CurrentSelectedTile->TileType.ETileType) {
+	case(ETileType::TE_Blank):
+
+		CurrentSelectedTile->UpgradeTile(TileManager->GetNextTileToPlace());
+		UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
+		break;
+	case(ETileType::TE_River):
+		//need to implement boat movement :)
+		UE_LOGFMT(LogTemp, Log, "player activated River tile, move to tile");
+		break;
+	default:
+		UE_LOGFMT(LogTemp, Log,
+			"player activated a different tile (tiletype {0}, do we want to do something different here? should it be interactable?",
+			UEnum::GetValueAsString(CurrentSelectedTile->TileType.ETileType));
+		break;
+	}
 }

@@ -26,6 +26,7 @@ void ATileManager::BeginPlay()
 
 	BuildGrid();
 	UE_LOGFMT(LogTemp, Log, "tilemanager begin play called from cpp class");
+	GetNextTileToPlace(*NextTileToPlace);
 
 }
 
@@ -144,7 +145,8 @@ void ATileManager::BuildGrid_Implementation()
 
 
 			bool bTileIsValid = false;
-			FTileData f = this->SelectRandomTileType(bTileIsValid);
+			FTileData f;
+			this->SelectRandomTileType(f, bTileIsValid);
 
 			if (bTileIsValid) {
 				this->PlaceTile_XY(FOffsetCoord(i, 0), f);
@@ -181,26 +183,22 @@ void ATileManager::BuildGrid_Implementation()
 }
 
 
-FTileData ATileManager::SelectRandomTileType(bool& valid)
+void ATileManager::SelectRandomTileType(FTileData& OutTile, bool& valid)
 {
-	FTileData tile;
 	if (this->TileDataTable) {
-
 
 		FPermissionListOwners names = this->TileDataTable->GetRowNames();
 		int rand = FMath::RandRange(1, names.Num() - 1);//excluding first row to keep blank tiles separate
 		FName name = names[rand];
-		//auto temp = 
+
 		UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
 
-		tile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
+		OutTile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 		valid = true;
-		return tile;
 	}
 	else {
 		UE_LOGFMT(LogTemp, Error, "ERROR: TileManager.TileDataTable ref not valid, make sure you set it");
-		return tile;
-
+		valid = false;
 	}
 	
 }
@@ -224,5 +222,14 @@ void ATileManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATileManager::GetNextTileToPlace(FTileData& OutTileData, bool pullNext)
+{
+	FTileData* lastTile = NextTileToPlace;
+	if (pullNext) {
+		bool b;
+		SelectRandomTileType(*NextTileToPlace, b);
+	}
 }
 
