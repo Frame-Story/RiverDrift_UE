@@ -103,13 +103,36 @@ ASpawnableTile::ASpawnableTile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	UE_LOGFMT(LogTemp, Log, "ASPawnableTile constr called");
 
 	this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
 	SpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));
 	SpriteComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	
+	//SpriteComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
+	SpriteComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
+	//SpriteComponent->setresponseto
+	//ETraceTypeQuery type = 
+	UE_LOGFMT(LogTemp, Log, "ASPawnableTile constr called, channel was {0}" , SpriteComponent->GetCollisionObjectType());
+	//SetDefaults();
+	
 
+
+	//UDataTable* table =  Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), NULL, TEXT("Game/Tiles/TileTypes")));
+	//	//LoadObject<FTileData>(nullptr, TEXT("Game/TileTypes"), );//will fail if we ever move the tiletypes table
+
+	//
+	//if (table) {
+	//	UE_LOGFMT(LogTemp, Log, "table succesfully loaded ");
+	//	
+	//	//table->row
+
+	//}
+	//else {
+	//	UE_LOGFMT(LogTemp, Warning, "could not load table");
+
+	//}
 }
+
 
 // Called when the game starts or when spawned
 void ASpawnableTile::BeginPlay()

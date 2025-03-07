@@ -13,12 +13,12 @@ UENUM(BlueprintType)
 enum class ETileType : uint8
 {
 	TE_Blank UMETA(DisplayName = "Blank"),
-	TE_field UMETA(DisplayName = "field"),
-	TE_forest UMETA(DisplayName = "forest"),
-	TE_mountain UMETA(DisplayName = "mountain"),
-	TE_river UMETA(DisplayName = "river"),
-	TE_town UMETA(DisplayName = "town"),
-	TE_mystery UMETA(DisplayName = "mystery"),
+	TE_Field UMETA(DisplayName = "field"),
+	TE_Forest UMETA(DisplayName = "forest"),
+	TE_Mountain UMETA(DisplayName = "mountain"),
+	TE_River UMETA(DisplayName = "river"),
+	TE_Town UMETA(DisplayName = "town"),
+	TE_Mystery UMETA(DisplayName = "mystery"),
 };
 
 USTRUCT()

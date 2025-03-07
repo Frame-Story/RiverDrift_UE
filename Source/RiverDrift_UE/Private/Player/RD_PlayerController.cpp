@@ -7,8 +7,10 @@
 //#include "TopDownRefCharacter.h"//change to RD player character when we have it
 #include "Engine/World.h"
 #include "Logging/StructuredLog.h"
+#include "HexLibrary.h"
 #include "Hexes/AA_SpawnableTile.h"
 #include "EnhancedInputComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
@@ -65,30 +67,55 @@ void ARD_PlayerController::OnSelectTileTriggered()
 {
 	UE_LOGFMT(LogTemp, Log, "Player input detected");
 
-	//from this point, try to deproject mouse to world and translate that into a hex coord
-	FVector WorldLocation;
-	FVector WorldDirection;
-
-	ECollisionChannel traceChannel = ECollisionChannel::ECC_GameTraceChannel1;
+	//raytracing method, works but feels needlessly expensive
+	ETraceTypeQuery traceChannel = UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1);
 	FHitResult HitResult;
-	GetHitResultUnderCursor(traceChannel, false, HitResult);
+	GetHitResultUnderCursorByChannel(traceChannel, false, HitResult);
+
 	if (HitResult.bBlockingHit) {
 		ASpawnableTile* tile;
-		tile = Cast<ASpawnableTile>(HitResult.GetActor());
-		if (IsValid(tile)) {
-			UE_LOGFMT(LogTemp, Log, "we got a hit, pos is {0}", tile->HexCoord.ToString());
 
+		tile = Cast<ASpawnableTile>(HitResult.GetActor());
+		if (IsValid(tile)) {//ensure that the actor we found was correctly cast to a tile - theoretically once I tweak trace channels this shouldn't ever return false, but I always cast on the side of caution
+			UE_LOGFMT(LogTemp, Log, "we got a hit, pos is {0} channel was {1}", tile->HexCoord.ToString(), ECollisionChannel::ECC_GameTraceChannel2);
+
+
+			//TODO: check whether the tile is "in range" of player - will we still be using the interaction box?
+			if (IsValid(CurrentSelectedTile)) {
+				if (CurrentSelectedTile == tile) {
+					UE_LOGFMT(LogTemp, Log, "player has clicked current tile twice over. activating that tile");
+					
+					switch (tile->TileType.ETileType) {
+						case(ETileType::TE_Blank):
+							UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
+							break;
+						case(ETileType::TE_River):
+							UE_LOGFMT(LogTemp, Log, "player activated River tile, move to tile");
+							break;
+						default:
+							UE_LOGFMT(LogTemp, Log, 
+								"player activated a different tile (tiletype {0}, do we want to do something different here? should it be interactable?", 
+								UEnum::GetValueAsString(tile->TileType.ETileType));
+							break;
+					}
+				}
+				else {
+					UE_LOGFMT(LogTemp, Log, "player has clicked a tile other than the currently selected tile. selecting that tile");
+					CurrentSelectedTile = tile;
+				}
+			}
+			else {
+				UE_LOGFMT(LogTemp, Log, "player has clicked a new tile for the very first time. selecting that tile");
+				CurrentSelectedTile = tile;
+			}
+		}
+		else {
+
+			UE_LOGFMT(LogTemp, Warning, "player tile raycast somehow returned an actor that isn't a tile. something is wrong with your collisions");
 		}
 	}
-
-
-
-	if (DeprojectMousePositionToWorld(WorldLocation, WorldDirection)) {
-		UE_LOGFMT(LogTemp, Log, "mouse click pos is {0}, direction is {1}", WorldLocation.ToString(), WorldDirection.ToString());
-
-	}
 	else {
-		UE_LOGFMT(LogTemp, Warning, "Unable to find mouse pos");
+		UE_LOGFMT(LogTemp, Log, "player has clicked into the void or somehow hit something that wasn't a tile. should we unset the currently selected tile?");
 
 	}
 }

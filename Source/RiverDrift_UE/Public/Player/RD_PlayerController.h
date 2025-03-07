@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+#include "../HexLibrary.h"
 #include "RD_PlayerController.generated.h"
 
 class UNiagaraSystem;
 class UInputMappingContext;
 class UInputAction;
+class ASpawnableTile;
+
 /**
  * 
  */
@@ -18,12 +21,9 @@ class RIVERDRIFT_UE_API ARD_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-
-
 	// --- VARIABLES ---
 
 public:
-	ARD_PlayerController();
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -37,6 +37,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SelectTileTouchAction;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, category = "Tiles")
+	FHex CurrentHex;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, category = "Tiles")
+	ASpawnableTile* CurrentSelectedTile;
 
 
 	///TODO: add input actions for move to tile and place tile
@@ -55,6 +60,11 @@ public:
 	///** Jump Input Action */
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	//UInputAction* SelectTileTouchAction;
+
+
+	// --- FUNCTIONS
+public:
+	ARD_PlayerController();
 
 
 
