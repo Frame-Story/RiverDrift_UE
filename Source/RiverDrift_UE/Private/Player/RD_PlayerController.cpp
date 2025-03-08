@@ -135,17 +135,21 @@ void ARD_PlayerController::OnTouchReleased()
 {
 }
 
+
 void ARD_PlayerController::ActivateTile()
 {
+	if (!CheckIfTileInRange(CurrentSelectedTile)) {
+		UE_LOGFMT(LogTemp, Log, "player tried activating a tile that they're not in range for. exiting");
+		return;
+	}
 	
 	if (!IsValid(GameMode)) {
 		GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
-	}
-	if (!IsValid(TileManager)) {
-		TileManager = GameMode->TileManager;
+		UE_LOGFMT(LogTemp, Error, "Player controller's GameModeRef was not valid, double check the logic for retrieving it in beginPlay()");
 	}
 
-		FTileData format = TileManager->GetNextTileToPlace();
+
+	FTileData format = GameMode->TileManager->GetNextTileToPlace();
 	switch (CurrentSelectedTile->TileType.ETileType) {
 	case(ETileType::TE_Blank):
 		CurrentSelectedTile->UpgradeTile(format);

@@ -83,9 +83,11 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
+	UFUNCTION(BlueprintImplementableFunction, BlueprintCallable )
+	bool CheckIfTileInRange(ASpawnableTile* tile);//no C++ implementation (yet?), likely for designers 
+
 	void ActivateTile();
 
-	TObjectPtr<ATileManager> TileManager;
 	TObjectPtr<ARD_GameMode> GameMode;
 
 private:
