@@ -83,12 +83,14 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
-	UFUNCTION(BlueprintImplementableFunction, BlueprintCallable )
-	bool CheckIfTileInRange(ASpawnableTile* tile);//no C++ implementation (yet?), likely for designers 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable )
+	bool CheckIfTileInRange(ASpawnableTile* tile);// only very basic (always true) c++ implementation, job for designers 
 
 	void ActivateTile();
 
 	TObjectPtr<ARD_GameMode> GameMode;
+	//TObjectPtr<ATileManager> TileManager;
+	
 
 private:
 

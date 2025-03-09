@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HexLibrary.h"
 #include "Hexes/TileManager.h"
+#include "HexLibrary.h"
 #include "Hexes/AA_SpawnableTile.h"
 #include "Hexes/TileData.h"
 #include "Core/RD_GameMode.h"
@@ -242,5 +242,11 @@ FTileData ATileManager::GetNextTileToPlace(bool generateNew)
 	//}
 
 	//return lastTile;
+}
+
+void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
+{
+	tile->UpgradeTile(format);
+	PlaceNeighbors(tile);
 }
 

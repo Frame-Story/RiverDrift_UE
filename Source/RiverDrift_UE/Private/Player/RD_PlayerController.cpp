@@ -28,7 +28,7 @@ void ARD_PlayerController::BeginPlay()
 
 
 	GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
-	TileManager = GameMode->TileManager;
+	//TileManager = GameMode->TileManager;
 	if (IsValid(GameMode)) {
 		UE_LOGFMT(LogTemp, Log, "gamemode is properly set");
 	}
@@ -36,12 +36,13 @@ void ARD_PlayerController::BeginPlay()
 		UE_LOGFMT(LogTemp, Warning, "gamemode is properly INVALID");
 
 	}
-	if (IsValid(TileManager)) {
-		UE_LOGFMT(LogTemp, Log, "TileManager is properly set");
-	}
-	else {
-		UE_LOGFMT(LogTemp, Warning, "TileManager is INVALID");		
-	}
+
+	//if (IsValid(TileManager)) {
+	//	UE_LOGFMT(LogTemp, Log, "TileManager is properly set");
+	//}
+	//else {
+	//	UE_LOGFMT(LogTemp, Warning, "TileManager is INVALID");		
+	//}
 }
 
 void ARD_PlayerController::SetupInputComponent()
@@ -135,6 +136,11 @@ void ARD_PlayerController::OnTouchReleased()
 {
 }
 
+bool ARD_PlayerController::CheckIfTileInRange_Implementation(ASpawnableTile* tile)
+{
+	return true;
+}
+
 
 void ARD_PlayerController::ActivateTile()
 {
@@ -152,7 +158,8 @@ void ARD_PlayerController::ActivateTile()
 	FTileData format = GameMode->TileManager->GetNextTileToPlace();
 	switch (CurrentSelectedTile->TileType.ETileType) {
 	case(ETileType::TE_Blank):
-		CurrentSelectedTile->UpgradeTile(format);
+		GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
+		//CurrentSelectedTile->UpgradeTile(format);
 		UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
 		break;
 	case(ETileType::TE_River):

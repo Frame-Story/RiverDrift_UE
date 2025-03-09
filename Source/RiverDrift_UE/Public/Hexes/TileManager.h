@@ -46,6 +46,8 @@ public:
 	//returns the tile that the tilemanager is currently going to return next. defaults to generating a new one first
 	FTileData GetNextTileToPlace(bool generateNew = true);
 
+	void UpgradeTile(FTileData format, ASpawnableTile* tile);
+
 protected:
 	//variables
 

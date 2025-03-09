@@ -8,6 +8,7 @@
 
 class UPaperSpriteComponent;
 struct FTileData;
+class ATileManager;
 UCLASS()
 class ASpawnableTile : public AActor
 {
@@ -40,6 +41,7 @@ public:
 
 	void UpgradeTile(FTileData NewType);
 
+	TObjectPtr<ATileManager> tileManager;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FTileData TileType;

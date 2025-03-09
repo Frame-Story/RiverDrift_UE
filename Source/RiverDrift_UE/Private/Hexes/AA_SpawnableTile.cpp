@@ -1,4 +1,5 @@
 #include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/TileManager.h"
 #include "Hexes/TileData.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -94,6 +95,12 @@ void ASpawnableTile::UpgradeTile(FTileData NewType)
 	UE_LOGFMT(LogTemp, Log, "It should've called upgrade");
 	this->TileType = NewType;
 	SpriteComponent->SetSprite(NewType.sprite);
+
+	//if (IsValid(tileManager)) {
+	//	ATileManager::Placeneigh
+	//}
+
+	//TODO: add call to Tilemanager to place neighbors (can this be a static function? otherwise we can just ste the tileman ref on placement) 
 	
 }
 
