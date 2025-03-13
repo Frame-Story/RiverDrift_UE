@@ -143,15 +143,23 @@ void ATileManager::BuildGrid_Implementation()
 	if (this->TileDataTable) {
 
 
+		FTileData RiverTile = *this->TileDataTable->FindRow<FTileData>("River", "defaultRiver");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 
-		for (int i = 0; i < 10; i++) {
+		this->PlaceTile_XY(FOffsetCoord(0, 0), RiverTile);//make sure player starts on river tile
 
+
+
+		for (int i = 1; i >=0; i--) {
 
 			bool bTileIsValid = false;
 			FTileData f;
 			f = this->SelectRandomTileType();
 
-			this->PlaceTile_XY(FOffsetCoord(i, 0), f);
+			this->PlaceTile_XY(FOffsetCoord(1, i), f);//two tiles to right and up right are random
+
+
+
+
 			//if (isempty(f)) {
 			//}
 			//else {
@@ -173,7 +181,7 @@ void ATileManager::BuildGrid_Implementation()
 			//	}
 			//}
 
-			UE_LOGFMT(LogTemp, Display, " placing one tile --------------- \n");
+			UE_LOGFMT(LogTemp, Display, " buildgrid iter one tile --------------- \n");
 			UE_LOGFMT(LogTemp, Display, "  \n");
 
 		}
