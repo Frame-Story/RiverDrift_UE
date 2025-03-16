@@ -68,15 +68,17 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	//}
 
 
-	if (IsValid(prefab.sprite)) {
-		//UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
+	tile->UpdateAppearance(prefab);
 
-		tile->SpriteComponent->SetSprite(prefab.sprite);
-	}
-	else {
-		UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(prefab.ETileType));
-	}
-	tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
+	//if (IsValid(prefab.Sprite)) {
+	//	//UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
+
+	//	tile->SpriteComponent->SetSprite(prefab.Sprite);
+	//}
+	//else {
+	//	UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(prefab.ETileType));
+	//}
+	//tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
 
 	tile->offsetCoord = FOffsetCoord::FOffsetCoord(c.x/*-c.y/2*/, c.y);//-c.y/2 from catlike
 
@@ -90,11 +92,15 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	return tile;
 }
 
+
 void ASpawnableTile::UpgradeTile(FTileData NewType)
 {
 	UE_LOGFMT(LogTemp, Log, "It should've called upgrade");
 	this->TileType = NewType;
-	SpriteComponent->SetSprite(NewType.sprite);
+
+	UpdateAppearance(NewType);
+
+	//SpriteComponent->SetSprite(NewType.Sprite);
 
 	//if (IsValid(tileManager)) {
 	//	ATileManager::Placeneigh
@@ -102,6 +108,31 @@ void ASpawnableTile::UpgradeTile(FTileData NewType)
 
 	//TODO: add call to Tilemanager to place neighbors (can this be a static function? otherwise we can just ste the tileman ref on placement) 
 	
+}
+
+void ASpawnableTile::UpdateAppearance(FTileData NewType)
+{
+	if (IsValid(this->SpriteComponent)) {
+		this->SpriteComponent->SetSprite(NewType.Sprite);
+		this->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
+
+	}
+	else {
+		UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(NewType.ETileType));
+	}
+
+	if (NewType.Billboard != nullptr) {
+		FActorSpawnParameters SpawnInfo;
+		SpawnInfo.Owner = this;
+		SpawnInfo.ObjectFlags |= RF_Transient;
+
+
+		GetWorld()->SpawnActor<AActor>(
+			NewType.Billboard, this->GetTransform().GetLocation(), FRotator::ZeroRotator, SpawnInfo);
+	}
+	else {
+		UE_LOGFMT(LogTemp, Log, "billboard reference for the {0} Data Asset HAS NOT been set, leaving a blank billboard", UEnum::GetValueAsString(NewType.ETileType));
+	}
 }
 
 

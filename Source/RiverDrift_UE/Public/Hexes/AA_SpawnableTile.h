@@ -40,6 +40,9 @@ public:
 	static ASpawnableTile* CreateTile(FOffsetCoord c, FTileData prefab, AActor* _owner);
 
 	void UpgradeTile(FTileData NewType);
+	
+	void UpdateAppearance(FTileData NewType);
+
 
 	TObjectPtr<ATileManager> tileManager;
 

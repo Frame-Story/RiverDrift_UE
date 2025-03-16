@@ -31,7 +31,10 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
-	UPaperSprite* sprite;
+	UPaperSprite* Sprite;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	TSubclassOf<AActor> Billboard;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	ETileType ETileType;
