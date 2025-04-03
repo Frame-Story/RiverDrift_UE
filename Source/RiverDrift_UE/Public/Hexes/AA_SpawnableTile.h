@@ -50,7 +50,7 @@ public:
 	FTileData TileType;
 
 
-	UPaperSpriteComponent* SpriteComponent;
+	UPaperSpriteComponent* BackgroundSpriteComponent;
 
 protected:
 	// Called when the game starts or when spawned

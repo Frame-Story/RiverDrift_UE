@@ -112,9 +112,9 @@ void ASpawnableTile::UpgradeTile(FTileData NewType)
 
 void ASpawnableTile::UpdateAppearance(FTileData NewType)
 {
-	if (IsValid(this->SpriteComponent)) {
-		this->SpriteComponent->SetSprite(NewType.Sprite);
-		this->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
+	if (IsValid(this->BackgroundSpriteComponent)) {
+		this->BackgroundSpriteComponent->SetSprite(NewType.Sprite);
+		this->BackgroundSpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
 
 	}
 	else {
@@ -143,14 +143,14 @@ ASpawnableTile::ASpawnableTile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
-	SpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));
-	SpriteComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	BackgroundSpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));
+	BackgroundSpriteComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	
 	//SpriteComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
-	SpriteComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
+	BackgroundSpriteComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
 	//SpriteComponent->setresponseto
 	//ETraceTypeQuery type = 
-	UE_LOGFMT(LogTemp, Log, "ASPawnableTile constr called, channel was {0}" , SpriteComponent->GetCollisionObjectType());
+	UE_LOGFMT(LogTemp, Log, "ASPawnableTile constr called, channel was {0}" , BackgroundSpriteComponent->GetCollisionObjectType());
 	//SetDefaults();
 	
 

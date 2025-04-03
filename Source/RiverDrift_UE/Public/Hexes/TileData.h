@@ -2,12 +2,14 @@
 
 #include "CoreMinimal.h"
 //#include "../HexLibrary.h"
+#include "RDBillboardGroupBase.h"
 #include "TileData.generated.h"
 /**
  *
  */
 
 class UPaperSprite;
+class ARDBillboardGroupBase;
 
 UENUM(BlueprintType)
 enum class ETileType : uint8
@@ -34,7 +36,7 @@ public:
 	UPaperSprite* Sprite;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
-	TSubclassOf<AActor> Billboard;
+	TSubclassOf<ARDBillboardGroupBase> Billboard;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	ETileType ETileType;
