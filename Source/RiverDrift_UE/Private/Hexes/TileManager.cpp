@@ -236,10 +236,11 @@ void ATileManager::Tick(float DeltaTime)
 
 FTileData ATileManager::GetNextTileToPlace(bool generateNew)
 {
+	FTileData lastTile = NextTileToPlace;
 	if (generateNew) {
 		NextTileToPlace = SelectRandomTileType();
 	}
-	return NextTileToPlace;
+	return lastTile;
 
 	//if (IsValid(NextTileToPlace)) {
 
