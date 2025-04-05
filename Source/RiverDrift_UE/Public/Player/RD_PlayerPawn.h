@@ -6,10 +6,14 @@
 #include "GameFramework/Pawn.h"
 #include "RD_PlayerPawn.generated.h"
 
+class UStaticMeshComponent;
+
 UCLASS()
 class RIVERDRIFT_UE_API ARD_PlayerPawn : public APawn
 {
 	GENERATED_BODY()
+
+// --- FUNCTIONS ---
 
 public:
 	// Sets default values for this pawn's properties
@@ -26,14 +30,21 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	// --- FUNCTIONS ---
+// --- VARS ---
 
 public:	
 
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return SpringArmComp; }
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FTransform ZeroTransform;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* PlayerModel;
 
 
 private:
@@ -43,5 +54,5 @@ private:
 
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+	class USpringArmComponent* SpringArmComp;
 };

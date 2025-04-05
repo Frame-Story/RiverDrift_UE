@@ -22,17 +22,34 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 	bUseControllerRotationRoll = false;
 
 	// Create a camera boom...
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 800.f;
-	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
-	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
-
-	// Create a camera...
+	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
+	PlayerModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
-	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	
+	//CameraBoom->AttachToComponent(rootcom);
+	//CameraBoom->SetupAttachment(RootComponent);
+
+	PlayerModel->SetupAttachment(RootComponent);
+	SpringArmComp->SetupAttachment(PlayerModel);
+	TopDownCameraComponent->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
+	//SpringArmComp->SetRelativeRotation(FRotator(0.0f, 0.f, 0.f));
+
+
+	//SpringArmComp->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
+	//SpringArmComp->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+
+				//Assign SpringArm class variables.
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 65.0f), FRotator(-60.0f, 0.0f, 0.0f));
+	SpringArmComp->TargetArmLength = 400.f;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->CameraLagSpeed = 3.0f;
+
+
+	//SpringArmComp->TargetArmLength = 800.f;
+	// Create a camera...
+	//TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +59,14 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 // Called when the game starts or when spawned
 void ARD_PlayerPawn::BeginPlay()
 {
+	FTransform StartTransform = this->GetTransform();
+	//FRotator CameraStartRotation = this->
+
+	//this->RootComponent->SetWorldTransform(ZeroTransform);
+	//TopDownCameraComponent->SetWorldTransform(StartTransform);
+
+
+
 	Super::BeginPlay();
 	
 }
