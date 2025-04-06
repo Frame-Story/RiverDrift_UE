@@ -6,6 +6,7 @@
 #include "Logging/StructuredLog.h"
 #include "RiverDrift_UE/RiverDrift_UE.h"
 #include "Kismet//KismetMathLibrary.h"
+#include "Materials/MaterialInstance.h"
 #include "PaperSprite.h"
 #include "PaperSpriteComponent.h"
 //#include
@@ -13,22 +14,21 @@
 #include "Engine/World.h"
 
 
-ASpawnableTile* ASpawnableTile::CreateTile(const FHex& h, FTileData prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::InitializeTile(const FHex& h, FTileData prefab, AActor* _owner)
 {
 
 	FOffsetCoord offset = UHexLibrary::offset_from_cube(h);
 
-	ASpawnableTile* tile = CreateTile( offset, prefab, _owner);
+	ASpawnableTile* tile = InitializeTile(offset, prefab, _owner);
 
 	return tile;
 }
 
 //should standardize your calls
-ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AActor* _owner)
+ASpawnableTile* ASpawnableTile::InitializeTile(FOffsetCoord c, FTileData prefab, AActor* _owner)
 {
 	//UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
 
-	ASpawnableTile* tile;
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Owner = _owner;
@@ -44,13 +44,29 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 
 	//worldPos.X = c.y < 0 ? worldPos.X: worldPos.X *-1;
 
-	FTransform transform;
 
 	
-	tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
-		ASpawnableTile::StaticClass(), worldPos, FRotator::ZeroRotator, SpawnInfo);
+	//since the refactor that changed this from static spawn to initialize, we Might be missing out on spawn info
+	// 
+	//tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
+	//	ASpawnableTile::getdefaultobje, worldPos, FRotator::ZeroRotator, SpawnInfo);
 	
-	tile->TileType = prefab;
+	//spawn actor vars that we need to redo:
+	// worldpos
+	// zerorotator
+	//spawninfo?
+
+	SetActorLocation(worldPos);
+
+	//this->PostSpawnInitialize(worldPos,)
+
+	this->SetOwner(_owner);
+	
+	
+	
+	//this->objectflag
+
+	TileType = prefab;
 	//tile->TileType = prefab.ETileType;
 
 
@@ -68,7 +84,7 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	//}
 
 
-	tile->UpdateAppearance(prefab);
+	UpdateAppearance(prefab);
 
 	//if (IsValid(prefab.Sprite)) {
 	//	//UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
@@ -80,16 +96,14 @@ ASpawnableTile* ASpawnableTile::CreateTile(FOffsetCoord c, FTileData prefab, AAc
 	//}
 	//tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
 
-	tile->offsetCoord = FOffsetCoord::FOffsetCoord(c.x/*-c.y/2*/, c.y);//-c.y/2 from catlike
+	offsetCoord = FOffsetCoord::FOffsetCoord(c.x/*-c.y/2*/, c.y);//-c.y/2 from catlike
 
 	//set tile's coordinates
-	tile->HexCoord = UHexLibrary::offset_to_cube(tile->offsetCoord);
-
+	HexCoord = UHexLibrary::offset_to_cube(offsetCoord);
 	
-
 	//prefab.sprite
 
-	return tile;
+	return this;
 }
 
 
@@ -144,7 +158,7 @@ ASpawnableTile::ASpawnableTile()
 
 	this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
 	BackgroundSpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));
-	BackgroundSpriteComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	BackgroundSpriteComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 	
 	//SpriteComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
 	BackgroundSpriteComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
@@ -188,5 +202,14 @@ void ASpawnableTile::Tick(float DeltaTime)
 	//UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
 
 
+}
+
+void ASpawnableTile::SelectTile()
+{
+	//BackgroundSpriteComponent->SetMaterial(0, );
+}
+
+void ASpawnableTile::DeselectTile()
+{
 }
 

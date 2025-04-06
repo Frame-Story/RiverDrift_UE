@@ -35,8 +35,6 @@ public:
 	static ASpawnableTile* dummy_tile;
 	UFUNCTION(BlueprintCallable)
 	bool TileIsFilled(FHex hex, ASpawnableTile*& tile); //expose - change to isFilled
-	UFUNCTION(BlueprintCallable)
-	void InsertIntoMap(int q, int r, int s, ASpawnableTile* tile); //expose - change to hex
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FTileData SelectRandomTileType( /*bool& valid*/);//change to selectRandomTileFormat
@@ -59,6 +57,8 @@ protected:
 
 	
 	//functions
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ASpawnableTile> DefaultSpawnableTileBP;
 	
 	
 	// Called when the game starts or when spawned
@@ -68,10 +68,15 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void BuildGrid(); //implemented in c++ as BuildGrid_Implementation - able to be overriden by blueprints - largely placeholder until player input is working
 
+	//private backend to initialize tile
+	ASpawnableTile* SpawnTile(FHex hexCoord, FTileData format);
+
 	UFUNCTION(BlueprintCallable) 
-	void PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format);
+	ASpawnableTile* PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format);
 	UFUNCTION(BlueprintCallable)
 	ASpawnableTile* PlaceTile_QRS(FHex hexCoord, FTileData format);
+
+	//arguably unecessary wrapper function, just calls spawnTile and looks up blank format
 	ASpawnableTile* CreateBlankTile(FHex hexCoord);
 
 	void PlaceNeighbors(ASpawnableTile* tile);

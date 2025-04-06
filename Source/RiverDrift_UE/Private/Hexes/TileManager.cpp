@@ -42,19 +42,15 @@ bool ATileManager::TileIsFilled(FHex hex, ASpawnableTile* &tile)
 	return !(tile == nullptr);
 }
 
-void ATileManager::InsertIntoMap(int q, int r, int s, ASpawnableTile* tile)
-{
-	RD_TileMap.Add(FVector3f(q, r, s), tile); //removing hexmap for now
-}
 
 
-void ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format) {
+ASpawnableTile* ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData format) {
 
 	UE_LOGFMT(LogTemp, Log, "placetile_XY called || offset coords x {0} y {1} ", offsetCoord.x, offsetCoord.y);
 	//FTileData tileData = format.GetRow<FTileData>("");
 	FHex cubicCoord = UHexLibrary::offset_to_cube(offsetCoord); //static instantiation of FHex? Dunaganq
 
-	ATileManager::PlaceTile_QRS(cubicCoord, format);
+	return ATileManager::PlaceTile_QRS(cubicCoord, format);
 
 	//ASpawnableTile* tile = ASpawnableTile::CreateTile(offsetCoord, format, this);
 }
@@ -69,8 +65,12 @@ ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 		UE_LOGFMT(LogTemp, Warning, "tilemanager is trying to place a tile at a coordinate that doesn't yet exist. we likely only want to allow this when the tile man is placing them directly (rather than from input by player) {0} ", *hexCoord.ToString());
 		//TODO: fill out
 		//should only 
-		tile = ASpawnableTile::CreateTile(hexCoord, format, this);
-		InsertIntoMap(hexCoord.q, hexCoord.r, hexCoord.s, tile);
+
+
+		tile= SpawnTile(hexCoord, format);
+		//tile->AttachToActor(this);
+
+		//tile = ASpawnableTile::InitializeTile(hexCoord, format, this);
 	}
 	else {
 		//it already exists, so upgrade it.
@@ -95,15 +95,40 @@ ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 	return tile;
 }
 
+ASpawnableTile* ATileManager::SpawnTile(FHex hexCoord, FTileData format) {
+	//ASpawnableTile* tile = GetWorld()->SpawnActor<ASpawnableTile>(DefaultSpawnableTileBP->StaticClass());
+	ASpawnableTile* tile = GetWorld()->SpawnActor<ASpawnableTile>(DefaultSpawnableTileBP);
+
+	if (IsValid(tile)) {
+		tile->InitializeTile(hexCoord, format, this);
+	
+		//insert it into map, has to be converted to vec3 as FMaps can't really do custom structs
+		RD_TileMap.Add(FVector3f(hexCoord.q, hexCoord.r, hexCoord.s), tile);
+
+	}
+	else {
+		UE_LOGFMT(LogTemp, Fatal, "Tile not valid");
+	}
+
+	
+
+	return tile;
+
+}
+
 ASpawnableTile* ATileManager::CreateBlankTile(FHex hexCoord)
 {
 	UE_LOGFMT(LogTemp, Log, "creating blank tile at coords: q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
 
+	FTileData BlankTile = *this->TileDataTable->FindRow<FTileData>("Blank", "defaultBlank");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 
-	ASpawnableTile* tile = ASpawnableTile::CreateTile(hexCoord, 
-		*this->TileDataTable->FindRow<FTileData>("Blank", "blank placement in PlaceNeighbors()"), this);
-	InsertIntoMap(hexCoord.q, hexCoord.r, hexCoord.s, tile);
-	return tile;
+
+	return SpawnTile(hexCoord, BlankTile);
+
+
+	//ASpawnableTile* tile = GetWorld()->SpawnActor<ASpawnableTile>(SpawnableTileBP.GetDefaultObject()->StaticClass());
+	//tile->InitializeTile(hexCoord,*this->TileDataTable->FindRow<FTileData>("Blank", "blank placement in PlaceNeighbors()"), this);
+	
 }
 
 
@@ -146,7 +171,7 @@ void ATileManager::BuildGrid_Implementation()
 		FTileData RiverTile = *this->TileDataTable->FindRow<FTileData>("River", "defaultRiver");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 
 		this->PlaceTile_XY(FOffsetCoord(0, 0), RiverTile);//make sure player starts on river tile
-
+		
 
 
 		for (int i = 1; i >=0; i--) {
