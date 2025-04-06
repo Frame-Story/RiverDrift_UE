@@ -14,6 +14,7 @@ class UInputAction;
 class ASpawnableTile;
 class ATileManager;
 class ARD_GameMode;
+class ARD_PlayerPawn;
 
 /**
  * 
@@ -96,5 +97,6 @@ private:
 
 	bool bPlayerIsTouchingScreen; // Is it a touch device
 
+	ARD_PlayerPawn* RDPlayerPawn;
 
 };

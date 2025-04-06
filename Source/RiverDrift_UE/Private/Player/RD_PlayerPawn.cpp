@@ -7,6 +7,7 @@
 #include "Components/DecalComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Hexes/AA_SpawnableTile.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
@@ -76,6 +77,7 @@ void ARD_PlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 }
 
 // Called to bind functionality to input
@@ -83,5 +85,11 @@ void ARD_PlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ARD_PlayerPawn::MoveToTile(ASpawnableTile* tile)
+{
+	SetActorLocation(tile->GetActorLocation());
+	
 }
 

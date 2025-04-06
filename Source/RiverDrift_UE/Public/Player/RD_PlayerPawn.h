@@ -7,6 +7,7 @@
 #include "RD_PlayerPawn.generated.h"
 
 class UStaticMeshComponent;
+class ASpawnableTile;
 
 UCLASS()
 class RIVERDRIFT_UE_API ARD_PlayerPawn : public APawn
@@ -24,6 +25,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void MoveToTile(ASpawnableTile* tile);
 
 protected:
 	// Called when the game starts or when spawned

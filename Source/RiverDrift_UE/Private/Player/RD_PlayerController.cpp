@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "HexLibrary.h"
 #include "Hexes/AA_SpawnableTile.h"
+#include "Player/RD_PlayerPawn.h"
 #include "Core/RD_GameMode.h"
 #include "Hexes/TileManager.h"
 
@@ -36,6 +37,12 @@ void ARD_PlayerController::BeginPlay()
 		UE_LOGFMT(LogTemp, Warning, "gamemode is properly INVALID");
 
 	}
+	APawn* pawn = GetPawn();
+	RDPlayerPawn = Cast<ARD_PlayerPawn>(pawn);
+	if (!IsValid(RDPlayerPawn)) {
+		UE_LOG(LogTemp, Warning, TEXT("Player Pawn not set!!!"))
+	}
+
 
 	//if (IsValid(TileManager)) {
 	//	UE_LOGFMT(LogTemp, Log, "TileManager is properly set");
@@ -154,10 +161,11 @@ void ARD_PlayerController::ActivateTile()
 		UE_LOGFMT(LogTemp, Error, "Player controller's GameModeRef was not valid, double check the logic for retrieving it in beginPlay()");
 	}
 
-
-	FTileData format = GameMode->TileManager->GetNextTileToPlace();
+	FTileData format;
+	
 	switch (CurrentSelectedTile->TileType.ETileType) {
 	case(ETileType::TE_Blank):
+		format = GameMode->TileManager->GetNextTileToPlace();
 		GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
 		//CurrentSelectedTile->UpgradeTile(format);
 		UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
@@ -165,6 +173,7 @@ void ARD_PlayerController::ActivateTile()
 	case(ETileType::TE_River):
 		//need to implement boat movement :)
 		UE_LOGFMT(LogTemp, Log, "player activated River tile, move to tile");
+		RDPlayerPawn->MoveToTile(CurrentSelectedTile);
 		break;
 	default:
 		UE_LOGFMT(LogTemp, Log,
