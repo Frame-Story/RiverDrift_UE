@@ -104,6 +104,10 @@ void ARD_PlayerController::OnSelectTileTriggered()
 		if (IsValid(tile)) {//ensure that the actor we found was correctly cast to a tile - theoretically once I tweak trace channels this shouldn't ever return false, but I always cast on the side of caution
 			UE_LOGFMT(LogTemp, Log, "we got a hit, pos is {0} channel was {1}", tile->HexCoord.ToString(), ECollisionChannel::ECC_GameTraceChannel2);
 
+			if (IsValid(CurrentSelectedTile)) {
+
+			}
+
 
 			//TODO: check whether the tile is "in range" of player - will we still be using the interaction box?
 			if (IsValid(CurrentSelectedTile)) {
@@ -171,6 +175,7 @@ void ARD_PlayerController::ActivateTile()
 	case(ETileType::TE_Blank):
 		format = GameMode->TileManager->GetNextTileToPlace();
 		GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
+
 		//CurrentSelectedTile->UpgradeTile(format);
 		UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
 		break;
@@ -185,4 +190,9 @@ void ARD_PlayerController::ActivateTile()
 			UEnum::GetValueAsString(CurrentSelectedTile->TileType.ETileType));
 		break;
 	}
+
+
+	CurrentSelectedTile->DeselectTile();
+	CurrentSelectedTile = nullptr;
+
 }
