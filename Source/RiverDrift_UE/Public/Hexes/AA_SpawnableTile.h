@@ -9,6 +9,8 @@
 class UPaperSpriteComponent;
 struct FTileData;
 class ATileManager;
+class UMaterialInstanceDynamic;
+class UMaterialInterface;
 class UMaterialInstance;
 UCLASS()
 class ASpawnableTile : public AActor
@@ -40,10 +42,16 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Tiles")
-	UMaterialInstanceConstant* DefaultMaterial;
+	UMaterialInterface* DefaultMaterial;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Tiles")
-	UMaterialInstanceConstant* HighlightedMaterial;
+	UMaterialInterface* HighlightedMaterial;
+
+	UMaterialInstanceDynamic* DynamicMaterial;
+
+	UMaterialInstanceDynamic* DefaultMaterialInstance;
+	UMaterialInstanceDynamic* HighlightedMaterialInstance;
+
 
 // --- FUNCS ---
 

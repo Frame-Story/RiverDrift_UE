@@ -45,8 +45,8 @@ public:
 	bool bIsPlayerTraversible;
 
 
-	UPROPERTY(BlueprintReadWrite)
-	float cellSize = 250.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float cellSize = 256.0f;
 
 	float cellWidth = cellSize;
 	float cellHeight = cellSize;

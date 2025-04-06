@@ -7,6 +7,8 @@
 #include "RiverDrift_UE/RiverDrift_UE.h"
 #include "Kismet//KismetMathLibrary.h"
 #include "Materials/MaterialInstance.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "PaperSprite.h"
 #include "PaperSpriteComponent.h"
 //#include
@@ -157,7 +159,7 @@ ASpawnableTile::ASpawnableTile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
-	BackgroundSpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PaperSpriteComponent"));
+	BackgroundSpriteComponent = this->CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("BackgroundPaperSpriteComponent"));
 	BackgroundSpriteComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 	
 	//SpriteComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
@@ -167,7 +169,13 @@ ASpawnableTile::ASpawnableTile()
 	UE_LOGFMT(LogTemp, Log, "ASPawnableTile constr called, channel was {0}" , BackgroundSpriteComponent->GetCollisionObjectType());
 	//SetDefaults();
 	
+	
+	DefaultMaterialInstance = UMaterialInstanceDynamic::Create(DefaultMaterial, Owner);
+	HighlightedMaterialInstance = UMaterialInstanceDynamic::Create(HighlightedMaterial, Owner);
+	
+	DynamicMaterial = DefaultMaterialInstance;
 
+	BackgroundSpriteComponent->SetMaterial(0, DynamicMaterial);
 
 	//UDataTable* table =  Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), NULL, TEXT("Game/Tiles/TileTypes")));
 	//	//LoadObject<FTileData>(nullptr, TEXT("Game/TileTypes"), );//will fail if we ever move the tiletypes table
@@ -199,17 +207,24 @@ void ASpawnableTile::BeginPlay()
 void ASpawnableTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
+	//UE_LOGFMT(LogTemp, Log, "Yeah it gets called	");
 
 
 }
 
 void ASpawnableTile::SelectTile()
 {
-	//BackgroundSpriteComponent->SetMaterial(0, );
+	UMaterialInterface* mat = BackgroundSpriteComponent->GetMaterial(0);
+
+	UE_LOGFMT(LogTemp, Log, "select tile called in cpp, {0}", *mat->GetName());
+	BackgroundSpriteComponent->SetMaterial(0, HighlightedMaterial );
+	DynamicMaterial = HighlightedMaterialInstance;
+	
+	UE_LOGFMT(LogTemp, Log, "select tile called in cpp, {0}", *mat->GetName());
 }
 
 void ASpawnableTile::DeselectTile()
 {
+	BackgroundSpriteComponent->SetMaterial(0, DefaultMaterial );
 }
 

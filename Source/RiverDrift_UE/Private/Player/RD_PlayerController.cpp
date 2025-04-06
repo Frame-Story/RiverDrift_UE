@@ -114,12 +114,16 @@ void ARD_PlayerController::OnSelectTileTriggered()
 				}
 				else {
 					UE_LOGFMT(LogTemp, Log, "player has clicked a tile other than the currently selected tile. selecting that tile");
+					CurrentSelectedTile->DeselectTile();
 					CurrentSelectedTile = tile;
+					tile->SelectTile();
 				}
 			}
 			else {
 				UE_LOGFMT(LogTemp, Log, "player has clicked a new tile for the very first time. selecting that tile");
 				CurrentSelectedTile = tile;
+				tile->SelectTile();
+
 			}
 		}
 		else {
