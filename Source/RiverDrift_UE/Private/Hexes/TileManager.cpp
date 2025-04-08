@@ -284,3 +284,12 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 	PlaceNeighbors(tile);
 }
 
+FTileData ATileManager::LookupTileType(ETileType tileType, FString contextMessage = "context not specified")
+{
+	FName name=  UEnum::GetValueAsName(tileType);
+	UE_LOGFMT(LogTemp, Log, "looking up tile type, name is {0}", name);
+
+	return *this->TileDataTable->FindRow<FTileData>( name, contextMessage);//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
+
+}
+

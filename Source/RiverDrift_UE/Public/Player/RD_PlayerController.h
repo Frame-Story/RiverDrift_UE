@@ -28,6 +28,12 @@ class RIVERDRIFT_UE_API ARD_PlayerController : public APlayerController
 
 public:
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bOverrideWater;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, category = "Tiles")
+	ASpawnableTile* CurrentSelectedTile;
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -40,9 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SelectTileTouchAction;
 
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, category = "Tiles")
-	ASpawnableTile* CurrentSelectedTile;
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* OverrideWaterAction;
 
 
 	///TODO: add input actions for move to tile and place tile
@@ -83,6 +89,9 @@ protected:
 	void OnSelectTileTriggered();
 	void OnTouchTriggered();
 	void OnTouchReleased();
+
+	void OnOverrideWaterTriggered();
+	void OnOverrideWaterReleased();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable )
 	bool CheckIfTileInRange(ASpawnableTile* tile);// only very basic (always true) c++ implementation, job for designers 

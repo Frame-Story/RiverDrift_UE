@@ -12,6 +12,7 @@
 class ASpawnableTile;
 struct FHex;
 struct FOffsetCoord;
+enum TileType;
 //struct FTileData;
 
 UCLASS()
@@ -45,6 +46,8 @@ public:
 	FTileData GetNextTileToPlace(bool generateNew = true);
 
 	void UpgradeTile(FTileData format, ASpawnableTile* tile);
+
+	FTileData LookupTileType(ETileType tileType, FString contextMessage);
 
 protected:
 	//variables

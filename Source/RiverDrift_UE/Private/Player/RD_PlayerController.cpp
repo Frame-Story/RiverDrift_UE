@@ -75,6 +75,11 @@ void ARD_PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SelectTileTouchAction, ETriggerEvent::Triggered, this, &ARD_PlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SelectTileTouchAction, ETriggerEvent::Completed, this, &ARD_PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SelectTileTouchAction, ETriggerEvent::Canceled, this, &ARD_PlayerController::OnTouchReleased);
+		EnhancedInputComponent->BindAction(OverrideWaterAction, ETriggerEvent::Started, this, &ARD_PlayerController::OnOverrideWaterTriggered);
+		EnhancedInputComponent->BindAction(OverrideWaterAction, ETriggerEvent::Completed, this, &ARD_PlayerController::OnOverrideWaterReleased);
+
+
+
 	}
 	else
 	{
@@ -151,6 +156,16 @@ void ARD_PlayerController::OnTouchReleased()
 {
 }
 
+void ARD_PlayerController::OnOverrideWaterTriggered()
+{
+	bOverrideWater = true;
+}
+
+void ARD_PlayerController::OnOverrideWaterReleased()
+{
+	bOverrideWater = false;
+}
+
 bool ARD_PlayerController::CheckIfTileInRange_Implementation(ASpawnableTile* tile)
 {
 	return true;
@@ -173,8 +188,19 @@ void ARD_PlayerController::ActivateTile()
 	
 	switch (CurrentSelectedTile->TileType.ETileType) {
 	case(ETileType::TE_Blank):
-		format = GameMode->TileManager->GetNextTileToPlace();
-		GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
+		if (bOverrideWater) {
+
+			FName name = UEnum::GetValueAsName(ETileType::TE_River);
+			UE_LOGFMT(LogTemp, Log, "looking up tile type, name is {0}", name);
+			//format = GameMode->TileManager->LookupTileType(ETileType::TE_River, TEXT("activate tile with river override active"));
+			//GameMode->TileManager->UpgradeTile()
+		}
+		else {
+			format = GameMode->TileManager->GetNextTileToPlace();
+			GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
+
+		}
+
 
 		//CurrentSelectedTile->UpgradeTile(format);
 		UE_LOGFMT(LogTemp, Log, "player activated blank tile, time to upgrade it");
