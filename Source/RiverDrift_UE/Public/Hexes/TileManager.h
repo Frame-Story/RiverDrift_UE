@@ -13,6 +13,7 @@ class ASpawnableTile;
 struct FHex;
 struct FOffsetCoord;
 enum TileType;
+class ARD_GameMode;
 //struct FTileData;
 
 UCLASS()
@@ -49,6 +50,9 @@ public:
 
 	FTileData LookupTileType(ETileType tileType, FString contextMessage);
 
+	UFUNCTION()
+	void SetTileWeights();
+
 protected:
 	//variables
 
@@ -84,4 +88,8 @@ protected:
 
 	void PlaceNeighbors(ASpawnableTile* tile);
 
+	int fTotalRowsWeight;
+
+private:
+	TObjectPtr<ARD_GameMode> GameMode;
 };

@@ -6,6 +6,7 @@
 #include "Hexes/AA_SpawnableTile.h"
 #include "Hexes/TileData.h"
 #include "Core/RD_GameMode.h"
+#include "Core/RDPrototypingManager.h"
 #include "Rendering/RenderingSpatialHash.h"
 #include "Math/MathFwd.h"
 //#include ""
@@ -30,8 +31,26 @@ void ATileManager::BeginPlay()
 	UE_LOGFMT(LogTemp, Log, "tilemanager begin play called from cpp class");
 	//GetNextTileToPlace();
 	NextTileToPlace = SelectRandomTileType();
-	Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode())->TileManager = this;
+	GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->TileManager = this;
 
+	GameMode->OnGameModeInitializedDelegate.AddUObject(this, &ATileManager::SetTileWeights);
+
+}
+
+
+void ATileManager::SetTileWeights()
+{
+	//will we need to be able to change the weights during runtime?
+	fTotalRowsWeight = 0;
+	for (FName name : TileDataTable->GetRowNames()) {
+		FTileData* tile = TileDataTable->FindRow<FTileData>(name, "defaultRiver");
+		GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
+		if (tile->ETileType!= ETileType::TE_River || GameMode->PrototypingManagerInstance->bAllowWaterGeneration) {
+			fTotalRowsWeight += tile->weight;
+		}
+	}
+	UE_LOGFMT(LogTemp, Log, "setting tile weight, total is {0}", fTotalRowsWeight);
 }
 
 //bool ATileManager::tileExists(FHex hex, ASpawnableTile* tile)
@@ -223,7 +242,22 @@ void ATileManager::BuildGrid_Implementation()
 FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 {
 	FTileData foundTile;
-	if (this->TileDataTable) {
+	if (IsValid( this->TileDataTable)) {
+
+		int CurrentWeight = FMath::RandRange(0, fTotalRowsWeight - 1);
+
+		for (FName rowName : TileDataTable->GetRowNames()) {
+			if (rowName != "River" || GameMode->PrototypingManagerInstance->bAllowWaterGeneration) {
+				FTileData* tile = TileDataTable->FindRow<FTileData>(rowName, "Random weight calcs");
+				CurrentWeight -= tile->weight;
+				if (CurrentWeight < 0) {
+					return *tile;
+				}
+			}
+		}
+
+		UE_LOGFMT(LogTemp, Error, "You somehow managed to get over every row without getting negative. defaulting to fully equal weights I guess");
+
 
 		FPermissionListOwners names = this->TileDataTable->GetRowNames();
 		int rand = FMath::RandRange(1, names.Num() - 1);//excluding first row to keep blank tiles separate
@@ -305,4 +339,5 @@ FTileData ATileManager::LookupTileType(ETileType tileType, FString contextMessag
 	return *this->TileDataTable->FindRow<FTileData>(name, contextMessage);//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 
 }
+
 

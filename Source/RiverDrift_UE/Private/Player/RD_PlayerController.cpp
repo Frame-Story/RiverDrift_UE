@@ -167,9 +167,11 @@ void ARD_PlayerController::OnOverrideWaterTriggered()
 
 void ARD_PlayerController::OnOverrideWaterReleased()
 {
-	if (GameMode->PrototypingManagerInstance->bAllowOverridingWater) {
+	UE_LOGFMT(LogTemp, Log, "overriding water false");
+
+	//if (GameMode->PrototypingManagerInstance->bAllowOverridingWater) {
 		bOverrideWater = false;
-	}
+	//}
 }
 
 bool ARD_PlayerController::CheckIfTileInRange_Implementation(ASpawnableTile* tile)

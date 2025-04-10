@@ -12,6 +12,8 @@
 class ATileManager;
 class ARDPrototypingManager;
 
+DECLARE_MULTICAST_DELEGATE(FOnGameModeInitializedSignature)
+
 UCLASS()
 class RIVERDRIFT_UE_API ARD_GameMode : public AGameModeBase
 {
@@ -31,8 +33,9 @@ public:
 	TSubclassOf<ARDPrototypingManager> PrototypingManagerFormat;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr< ARDPrototypingManager> PrototypingManagerInstance;
+	TObjectPtr<ARDPrototypingManager> PrototypingManagerInstance;
 	
+	FOnGameModeInitializedSignature OnGameModeInitializedDelegate;
 	// --- FUNCTIONS ---
 
 public:

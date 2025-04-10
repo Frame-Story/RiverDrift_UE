@@ -48,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float cellSize = 256.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float weight = 16.0f; //can we use non-whole ints?
+
 	float cellWidth = cellSize;
 	float cellHeight = cellSize;
 
