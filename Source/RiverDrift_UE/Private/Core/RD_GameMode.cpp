@@ -4,6 +4,7 @@
 #include "Core/RD_GameMode.h"
 #include "Player/RD_PlayerController.h"
 #include "Hexes/TileManager.h"
+#include "Core/RDPrototypingManager.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARD_GameMode::ARD_GameMode()
@@ -25,4 +26,13 @@ ARD_GameMode::ARD_GameMode()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
+
+
 }
+
+void ARD_GameMode::BeginPlay()
+{
+	PrototypingManagerInstance =  GetWorld()->SpawnActor<ARDPrototypingManager>(PrototypingManagerFormat);
+}
+
+

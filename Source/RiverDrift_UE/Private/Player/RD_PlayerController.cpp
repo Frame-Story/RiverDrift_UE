@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "HexLibrary.h"
 #include "Hexes/AA_SpawnableTile.h"
+#include "Core/RDPrototypingManager.h"
 #include "Player/RD_PlayerPawn.h"
 #include "Core/RD_GameMode.h"
 #include "Hexes/TileManager.h"
@@ -75,6 +76,7 @@ void ARD_PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SelectTileTouchAction, ETriggerEvent::Triggered, this, &ARD_PlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SelectTileTouchAction, ETriggerEvent::Completed, this, &ARD_PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SelectTileTouchAction, ETriggerEvent::Canceled, this, &ARD_PlayerController::OnTouchReleased);
+		
 		EnhancedInputComponent->BindAction(OverrideWaterAction, ETriggerEvent::Started, this, &ARD_PlayerController::OnOverrideWaterTriggered);
 		EnhancedInputComponent->BindAction(OverrideWaterAction, ETriggerEvent::Completed, this, &ARD_PlayerController::OnOverrideWaterReleased);
 
@@ -158,12 +160,16 @@ void ARD_PlayerController::OnTouchReleased()
 
 void ARD_PlayerController::OnOverrideWaterTriggered()
 {
-	bOverrideWater = true;
+	if (GameMode->PrototypingManagerInstance->bAllowOverridingWater) {
+		bOverrideWater = true;
+	}
 }
 
 void ARD_PlayerController::OnOverrideWaterReleased()
 {
-	bOverrideWater = false;
+	if (GameMode->PrototypingManagerInstance->bAllowOverridingWater) {
+		bOverrideWater = false;
+	}
 }
 
 bool ARD_PlayerController::CheckIfTileInRange_Implementation(ASpawnableTile* tile)
@@ -191,15 +197,16 @@ void ARD_PlayerController::ActivateTile()
 		if (bOverrideWater) {
 
 			FName name = UEnum::GetValueAsName(ETileType::TE_River);
+
 			UE_LOGFMT(LogTemp, Log, "looking up tile type, name is {0}", name);
-			//format = GameMode->TileManager->LookupTileType(ETileType::TE_River, TEXT("activate tile with river override active"));
+			format = GameMode->TileManager->LookupTileType(ETileType::TE_River, TEXT("activate tile with river override active"));
 			//GameMode->TileManager->UpgradeTile()
 		}
 		else {
 			format = GameMode->TileManager->GetNextTileToPlace();
-			GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
 
 		}
+		GameMode->TileManager->UpgradeTile(format, CurrentSelectedTile);
 
 
 		//CurrentSelectedTile->UpgradeTile(format);

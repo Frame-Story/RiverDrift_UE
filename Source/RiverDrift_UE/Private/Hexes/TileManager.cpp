@@ -8,6 +8,7 @@
 #include "Core/RD_GameMode.h"
 #include "Rendering/RenderingSpatialHash.h"
 #include "Math/MathFwd.h"
+//#include ""
 #include "Logging/StructuredLog.h"
 
 
@@ -287,9 +288,21 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 FTileData ATileManager::LookupTileType(ETileType tileType, FString contextMessage = "context not specified")
 {
 	FName name=  UEnum::GetValueAsName(tileType);
-	UE_LOGFMT(LogTemp, Log, "looking up tile type, name is {0}", name);
+	
+	FText text;
+	//UEnum::getdispla
+	FTileData td;
+	
+	name = FName(UEnum::GetValueAsString(tileType).RightChop(14));
 
-	return *this->TileDataTable->FindRow<FTileData>( name, contextMessage);//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
+	UEnum::GetDisplayValueAsText(tileType, text);
+	//FString s = text.ToString();
+	FString string = text.ToString().RightChop(14);
+	//name = FName(string.RightChop(7));
+
+	UE_LOGFMT(LogTemp, Log, "looking up tile type in tileMan, name is {0}", name );
+
+	return *this->TileDataTable->FindRow<FTileData>(name, contextMessage);//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 
 }
 

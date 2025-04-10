@@ -10,6 +10,7 @@
  * 
  */
 class ATileManager;
+class ARDPrototypingManager;
 
 UCLASS()
 class RIVERDRIFT_UE_API ARD_GameMode : public AGameModeBase
@@ -22,10 +23,24 @@ public:
 
 	UPROPERTY(EditInstanceOnly)
 	TObjectPtr<ATileManager> TileManager;
+	
+
+
+	//functions
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ARDPrototypingManager> PrototypingManagerFormat;
+
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr< ARDPrototypingManager> PrototypingManagerInstance;
+	
 	// --- FUNCTIONS ---
 
 public:
 	ARD_GameMode();
+
+
+protected:
+	virtual void BeginPlay() override;
 
 
 };
