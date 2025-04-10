@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Components/SphereComponent.h"
 #include "RD_PlayerPawn.generated.h"
 
 class UStaticMeshComponent;
 class ASpawnableTile;
+class USphereComponent;
+class ARD_PlayerController;
 
 UCLASS()
 class RIVERDRIFT_UE_API ARD_PlayerPawn : public APawn
@@ -32,7 +35,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 // --- VARS ---
 
 public:	
@@ -44,11 +46,16 @@ public:
 
 protected:
 
+	ARD_PlayerController* PlayerController;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FTransform ZeroTransform;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* PlayerModel;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USphereComponent* RangeCollider;
 
 private:
 	/** Top down camera */

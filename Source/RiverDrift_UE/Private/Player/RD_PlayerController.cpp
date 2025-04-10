@@ -2,26 +2,36 @@
 
 
 #include "Player/RD_PlayerController.h"
+#include "Player/RD_PlayerPawn.h"
+#include "Core/DA_RDPrototypeAsset.h"
+#include "Core/RDPrototypingManager.h"
+#include "Core/RD_GameMode.h"
+#include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/TileManager.h"
+#include "HexLibrary.h"
 #include "Logging/StructuredLog.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Pawn.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Core/DA_RDPrototypeAsset.h"
 #include "Engine/World.h"
 #include "Engine/LocalPlayer.h"
-#include "HexLibrary.h"
-#include "Hexes/AA_SpawnableTile.h"
-#include "Core/RDPrototypingManager.h"
-#include "Player/RD_PlayerPawn.h"
-#include "Core/RD_GameMode.h"
-#include "Hexes/TileManager.h"
 
 ARD_PlayerController::ARD_PlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
+}
+
+void ARD_PlayerController::BeginOverlapCallback(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOGFMT(LogTemp, Log, "begining overlap callback");
+}
+
+void ARD_PlayerController::EndOverlapCallback(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOGFMT(LogTemp, Log, "ending overlap callback");
 }
 
 void ARD_PlayerController::BeginPlay()

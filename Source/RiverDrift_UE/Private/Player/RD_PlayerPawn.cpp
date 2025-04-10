@@ -2,12 +2,14 @@
 
 
 #include "Player/RD_PlayerPawn.h"
+#include "Player/RD_PlayerController.h"
+#include "Hexes/AA_SpawnableTile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Hexes/AA_SpawnableTile.h"
+#include "Components/SphereComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
@@ -22,10 +24,12 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Create a camera boom...
-	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	//create root component, player model, and collider
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
 	PlayerModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	RangeCollider = CreateDefaultSubobject<USphereComponent>(TEXT("TileRangeCollider"));
+	
+	// Create a camera boom...
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	
@@ -33,6 +37,8 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 	//CameraBoom->SetupAttachment(RootComponent);
 
 	PlayerModel->SetupAttachment(RootComponent);
+	RangeCollider->SetupAttachment(RootComponent);
+	
 	SpringArmComp->SetupAttachment(PlayerModel);
 	TopDownCameraComponent->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 	//SpringArmComp->SetRelativeRotation(FRotator(0.0f, 0.f, 0.f));
@@ -55,6 +61,8 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+
 }
 
 // Called when the game starts or when spawned
@@ -67,10 +75,20 @@ void ARD_PlayerPawn::BeginPlay()
 	//TopDownCameraComponent->SetWorldTransform(StartTransform);
 
 
+	PlayerController = Cast<ARD_PlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if (IsValid(PlayerController)) {
+		RangeCollider->OnComponentBeginOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::BeginOverlapCallback);
+
+	}
+	else {
+		UE_LOGFMT(LogTemp, Error, "player controller is not valid");
+	}
 
 	Super::BeginPlay();
 	
 }
+
 
 // Called every frame
 void ARD_PlayerPawn::Tick(float DeltaTime)
