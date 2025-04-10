@@ -68,6 +68,8 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	//UInputAction* SelectTileTouchAction;
 
+	UPROPERTY(visibleAnywhere)
+	TArray<TObjectPtr< ASpawnableTile>> TilesInRange;
 
 	// --- FUNCTIONS
 public:
@@ -100,6 +102,8 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable )
 	bool CheckIfTileInRange(ASpawnableTile* tile);// only very basic (always true) c++ implementation, job for designers 
+
+
 
 	void ActivateTile();
 

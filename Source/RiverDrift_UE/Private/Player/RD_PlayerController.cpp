@@ -27,11 +27,24 @@ ARD_PlayerController::ARD_PlayerController()
 void ARD_PlayerController::BeginOverlapCallback(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOGFMT(LogTemp, Log, "begining overlap callback");
+	ASpawnableTile* tile = Cast<ASpawnableTile>(OtherActor);
+	if (IsValid(tile)) {
+		UE_LOGFMT(LogTemp, Log, "overlap is a tile");
+		TilesInRange.Add(tile);
+
+	}
 }
 
 void ARD_PlayerController::EndOverlapCallback(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOGFMT(LogTemp, Log, "ending overlap callback");
+
+	ASpawnableTile* tile = Cast<ASpawnableTile>(OtherActor);
+	if (IsValid(tile)) {
+		UE_LOGFMT(LogTemp, Log, " end overlap is a tile, removing from array");
+		TilesInRange.Remove(tile);
+
+	}
 }
 
 void ARD_PlayerController::BeginPlay()

@@ -79,6 +79,21 @@ void ARD_PlayerPawn::BeginPlay()
 
 	if (IsValid(PlayerController)) {
 		RangeCollider->OnComponentBeginOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::BeginOverlapCallback);
+		RangeCollider->OnComponentEndOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::EndOverlapCallback);
+		
+		TArray<AActor*> OverlappingActors;
+		RangeCollider->GetOverlappingActors(OverlappingActors, ASpawnableTile::StaticClass());
+		for (AActor* a : OverlappingActors) {
+			ASpawnableTile* tile = Cast<ASpawnableTile>(a);
+			if (IsValid(tile)) {
+				PlayerController->TilesInRange.Add(tile);
+			}
+			else {
+				UE_LOGFMT(LogTemp, Fatal, "cast from overlapping actor to tile failed PlayerPawn::Beginplay, the fact that this even happened means ryan misunderstood something about how the class param of GetOverlappingActors worked");
+			}
+		}
+
+
 
 	}
 	else {
