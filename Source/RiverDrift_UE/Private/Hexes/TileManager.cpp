@@ -6,6 +6,7 @@
 #include "Hexes/AA_SpawnableTile.h"
 #include "Hexes/TileData.h"
 #include "Core/RD_GameMode.h"
+#include "Core/DA_RDPrototypeAsset.h"
 #include "Core/RDPrototypingManager.h"
 #include "Rendering/RenderingSpatialHash.h"
 #include "Math/MathFwd.h"
@@ -46,7 +47,7 @@ void ATileManager::SetTileWeights()
 	for (FName name : TileDataTable->GetRowNames()) {
 		FTileData* tile = TileDataTable->FindRow<FTileData>(name, "defaultRiver");
 		GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
-		if (tile->ETileType!= ETileType::TE_River || GameMode->PrototypingManagerInstance->bAllowWaterGeneration) {
+		if (tile->ETileType!= ETileType::TE_River || GameMode->PrototypingAsset->bAllowWaterGeneration) {
 			fTotalRowsWeight += tile->weight;
 		}
 	}
@@ -247,7 +248,7 @@ FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 		int CurrentWeight = FMath::RandRange(0, fTotalRowsWeight - 1);
 
 		for (FName rowName : TileDataTable->GetRowNames()) {
-			if (rowName != "River" || GameMode->PrototypingManagerInstance->bAllowWaterGeneration) {
+			if (rowName != "River" || GameMode->PrototypingAsset->bAllowWaterGeneration) {
 				FTileData* tile = TileDataTable->FindRow<FTileData>(rowName, "Random weight calcs");
 				CurrentWeight -= tile->weight;
 				if (CurrentWeight < 0) {

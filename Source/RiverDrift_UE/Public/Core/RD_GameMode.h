@@ -11,6 +11,7 @@
  */
 class ATileManager;
 class ARDPrototypingManager;
+class UDA_RDPrototypeAsset;
 
 DECLARE_MULTICAST_DELEGATE(FOnGameModeInitializedSignature)
 
@@ -26,14 +27,11 @@ public:
 	UPROPERTY(EditInstanceOnly)
 	TObjectPtr<ATileManager> TileManager;
 	
-
-
-	//functions
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ARDPrototypingManager> PrototypingManagerFormat;
-
+	
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<ARDPrototypingManager> PrototypingManagerInstance;
+	TObjectPtr<UDA_RDPrototypeAsset> PrototypingAsset;
+
+
 	
 	FOnGameModeInitializedSignature OnGameModeInitializedDelegate;
 	// --- FUNCTIONS ---

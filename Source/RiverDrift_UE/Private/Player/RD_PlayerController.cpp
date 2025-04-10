@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Core/DA_RDPrototypeAsset.h"
 #include "Engine/World.h"
 #include "Engine/LocalPlayer.h"
 #include "HexLibrary.h"
@@ -160,7 +161,7 @@ void ARD_PlayerController::OnTouchReleased()
 
 void ARD_PlayerController::OnOverrideWaterTriggered()
 {
-	if (GameMode->PrototypingManagerInstance->bAllowOverridingWater) {
+	if (GameMode->PrototypingAsset->bAllowOverridingWater) {
 		bOverrideWater = true;
 	}
 }

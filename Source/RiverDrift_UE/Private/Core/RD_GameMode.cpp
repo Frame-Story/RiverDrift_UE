@@ -33,7 +33,7 @@ ARD_GameMode::ARD_GameMode()
 void ARD_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	PrototypingManagerInstance =  GetWorld()->SpawnActor<ARDPrototypingManager>(PrototypingManagerFormat);
+	//PrototypingManagerInstance =  GetWorld()->SpawnActor<ARDPrototypingManager>(PrototypingManagerFormat);
 	OnGameModeInitializedDelegate.Broadcast();
 }
 
