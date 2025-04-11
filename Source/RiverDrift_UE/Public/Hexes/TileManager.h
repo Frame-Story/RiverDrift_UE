@@ -16,17 +16,47 @@ enum TileType;
 class ARD_GameMode;
 //struct FTileData;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTilePlacedSignature, ETileType, NextTile);
+
 UCLASS()
 class RIVERDRIFT_UE_API ATileManager : public AActor
 {
 	GENERATED_BODY()
-	
+
+
+	// --  VARS ---
+
 public:	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDataTable> TileDataTable;
 
+	static ASpawnableTile* dummy_tile;
+
+	UPROPERTY(BlueprintReadOnly)
+	FOnTilePlacedSignature D_OnTilePlacedDelegate;
 
 
+protected:
+	UPROPERTY(VisibleInstanceOnly)
+	FTileData NextTileToPlace; //needs to be a pointer as c++ can't tell how to allocate its size
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	TMap<FVector3f, ASpawnableTile* > RD_TileMap; //I think this is actually unneeded?
+
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ASpawnableTile> DefaultSpawnableTileBP;
+
+
+	int fTotalRowsWeight;
+
+private:
+	TObjectPtr<ARD_GameMode> GameMode;
+	
+	// --  FUNCS ---
+
+
+public:
 
 	// Sets default values for this actor's properties
 	ATileManager();
@@ -34,7 +64,6 @@ public:
 	//UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	//UDA_TileBase* TileFormat;
 
-	static ASpawnableTile* dummy_tile;
 	UFUNCTION(BlueprintCallable)
 	bool TileIsFilled(FHex hex, ASpawnableTile*& tile); //expose - change to isFilled
 	
@@ -44,6 +73,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
 	//returns the tile that the tilemanager is currently going to return next. defaults to generating a new one first
 	FTileData GetNextTileToPlace(bool generateNew = true);
 
@@ -56,18 +86,6 @@ public:
 
 protected:
 	//variables
-
-	UPROPERTY(VisibleInstanceOnly)
-	FTileData NextTileToPlace; //needs to be a pointer as c++ can't tell how to allocate its size
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	TMap<FVector3f, ASpawnableTile* > RD_TileMap; //I think this is actually unneeded?
-
-	
-	//functions
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ASpawnableTile> DefaultSpawnableTileBP;
-	
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -89,8 +107,4 @@ protected:
 
 	void PlaceNeighbors(ASpawnableTile* tile);
 
-	int fTotalRowsWeight;
-
-private:
-	TObjectPtr<ARD_GameMode> GameMode;
 };

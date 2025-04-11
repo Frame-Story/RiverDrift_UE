@@ -24,7 +24,7 @@ class RIVERDRIFT_UE_API ARD_GameMode : public AGameModeBase
 
 public:
 
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	TObjectPtr<ATileManager> TileManager;
 	
 	
