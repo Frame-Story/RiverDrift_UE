@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
+
 #include "RD_PlayerPawn.generated.h"
 
 class UStaticMeshComponent;
 class ASpawnableTile;
 class USphereComponent;
+class UCapsuleComponent;
 class ARD_PlayerController;
 
 UCLASS()
@@ -48,16 +51,23 @@ protected:
 
 	ARD_PlayerController* PlayerController;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FTransform ZeroTransform;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* PlayerModel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	USphereComponent* RangeCollider;
+	USphereComponent* InteractColliderCircle;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//USphereComponent* sphere;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float fRangeInNumOfTiles;
 
 private:
+
+	const float TileSize = 512;
+
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;

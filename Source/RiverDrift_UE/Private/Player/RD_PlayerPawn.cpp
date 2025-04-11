@@ -10,6 +10,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
@@ -27,7 +28,8 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 	//create root component, player model, and collider
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
 	PlayerModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	RangeCollider = CreateDefaultSubobject<USphereComponent>(TEXT("TileRangeCollider"));
+	InteractColliderCircle = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerInteractCollider_C"));
+	//sphere = CreateDefaultSubobject<USphereComponent>(TEXT("sphere"));
 	
 	// Create a camera boom...
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -37,7 +39,9 @@ ARD_PlayerPawn::ARD_PlayerPawn()
 	//CameraBoom->SetupAttachment(RootComponent);
 
 	PlayerModel->SetupAttachment(RootComponent);
-	RangeCollider->SetupAttachment(RootComponent);
+	InteractColliderCircle->SetupAttachment(RootComponent);
+
+
 	
 	SpringArmComp->SetupAttachment(PlayerModel);
 	TopDownCameraComponent->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
@@ -78,11 +82,11 @@ void ARD_PlayerPawn::BeginPlay()
 	PlayerController = Cast<ARD_PlayerController>(GetWorld()->GetFirstPlayerController());
 
 	if (IsValid(PlayerController)) {
-		RangeCollider->OnComponentBeginOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::BeginOverlapCallback);
-		RangeCollider->OnComponentEndOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::EndOverlapCallback);
+		InteractColliderCircle->OnComponentBeginOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::BeginOverlapCallback);
+		InteractColliderCircle->OnComponentEndOverlap.AddUniqueDynamic(PlayerController, &ARD_PlayerController::EndOverlapCallback);
 		
 		TArray<AActor*> OverlappingActors;
-		RangeCollider->GetOverlappingActors(OverlappingActors, ASpawnableTile::StaticClass());
+		InteractColliderCircle->GetOverlappingActors(OverlappingActors, ASpawnableTile::StaticClass());
 		for (AActor* a : OverlappingActors) {
 			ASpawnableTile* tile = Cast<ASpawnableTile>(a);
 			if (IsValid(tile)) {
