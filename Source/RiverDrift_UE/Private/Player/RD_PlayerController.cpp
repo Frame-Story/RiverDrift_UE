@@ -121,6 +121,7 @@ void ARD_PlayerController::OnInputStarted()
 
 void ARD_PlayerController::OnSelectTileTriggered()
 {
+
 	UE_LOGFMT(LogTemp, Log, "Player input detected");
 
 	//raytracing method, works but feels needlessly expensive
@@ -135,13 +136,17 @@ void ARD_PlayerController::OnSelectTileTriggered()
 		if (IsValid(tile)) {//ensure that the actor we found was correctly cast to a tile - theoretically once I tweak trace channels this shouldn't ever return false, but I always cast on the side of caution
 			UE_LOGFMT(LogTemp, Log, "we got a hit, pos is {0} channel was {1}", tile->HexCoord.ToString(), ECollisionChannel::ECC_GameTraceChannel2);
 
-			if (IsValid(CurrentSelectedTile)) {
-
+			if (!CheckIfTileInRange(tile)) {
+				UE_LOGFMT(LogTemp, Log, "player tried selecting a tile that they're not in range for. exiting");
+				return;
 			}
 
 
 			//TODO: check whether the tile is "in range" of player - will we still be using the interaction box?
 			if (IsValid(CurrentSelectedTile)) {
+
+
+
 				if (CurrentSelectedTile == tile) {
 					UE_LOGFMT(LogTemp, Log, "player has clicked current tile twice over. activating that tile");
 					
@@ -200,7 +205,7 @@ void ARD_PlayerController::OnOverrideWaterReleased()
 
 bool ARD_PlayerController::CheckIfTileInRange_Implementation(ASpawnableTile* tile)
 {
-	return true;
+	return TilesInRange.Contains(tile);
 }
 
 

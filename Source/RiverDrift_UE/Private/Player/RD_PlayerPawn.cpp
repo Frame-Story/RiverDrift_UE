@@ -4,6 +4,8 @@
 #include "Player/RD_PlayerPawn.h"
 #include "Player/RD_PlayerController.h"
 #include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/TileManager.h"
+#include "Core/RD_GameMode.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -104,6 +106,19 @@ void ARD_PlayerPawn::BeginPlay()
 		UE_LOGFMT(LogTemp, Error, "player controller is not valid");
 	}
 
+	GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
+
+	if (IsValid(GameMode->TileManager)) {
+		
+
+		//may cause issues if player doesn't start at origin, or if out variables don't stay valid
+		GameMode->TileManager->TileIsFilled(FHex(0, 0, 0), CurrentTileLocation);
+
+	}
+	else {
+		UE_LOGFMT(LogTemp, Fatal, "playerpawn.beginPlay tried retrieving a reference to GameMode->TileManager and it wasn't valid");
+	}
+
 	Super::BeginPlay();
 	
 }
@@ -126,7 +141,13 @@ void ARD_PlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ARD_PlayerPawn::MoveToTile(ASpawnableTile* tile)
 {
-	SetActorLocation(tile->GetActorLocation());
+	if (CurrentTileLocation->Neighbors.Contains(tile)) {
+		SetActorLocation(tile->GetActorLocation());
+		CurrentTileLocation = tile;
+	}
+	else {
+		UE_LOGFMT(LogTemp, Log, "Player tried moving to a river tile they're not adjacent to");
+	}
 	
 }
 

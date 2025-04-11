@@ -21,6 +21,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bAllowWaterGeneration;
 
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -37,6 +37,7 @@ public:
 	static ASpawnableTile* dummy_tile;
 	UFUNCTION(BlueprintCallable)
 	bool TileIsFilled(FHex hex, ASpawnableTile*& tile); //expose - change to isFilled
+	
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FTileData SelectRandomTileType( /*bool& valid*/);//change to selectRandomTileFormat

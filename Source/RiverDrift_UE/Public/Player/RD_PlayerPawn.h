@@ -12,6 +12,7 @@
 class UStaticMeshComponent;
 class ASpawnableTile;
 class USphereComponent;
+class ARD_GameMode;
 class UCapsuleComponent;
 class ARD_PlayerController;
 
@@ -64,9 +65,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float fRangeInNumOfTiles;
 
+	ASpawnableTile* CurrentTileLocation;
+
 private:
 
 	const float TileSize = 512;
+
+	ARD_GameMode* GameMode;
+
 
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
