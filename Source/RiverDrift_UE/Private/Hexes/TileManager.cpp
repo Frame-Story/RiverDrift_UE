@@ -252,7 +252,8 @@ FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 				FTileData* tile = TileDataTable->FindRow<FTileData>(rowName, "Random weight calcs");
 				CurrentWeight -= tile->weight;
 				if (CurrentWeight < 0) {
-					UE_LOGFMT(LogTemp, Log, "select random called, result was {0}", tile->ETileType);
+					FString name = UEnum::GetValueAsString(tile->ETileType);
+					UE_LOGFMT(LogTemp, Log, "select random called, result was {0}", name);
 					D_OnTileGeneratedDelegate.Broadcast(*tile);
 					return *tile;
 				}
