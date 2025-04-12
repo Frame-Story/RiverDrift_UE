@@ -243,7 +243,7 @@ void ATileManager::BuildGrid_Implementation()
 FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 {
 	FTileData foundTile;
-	if (IsValid( this->TileDataTable)) {
+	if (IsValid(this->TileDataTable)) {
 
 		int CurrentWeight = FMath::RandRange(0, fTotalRowsWeight - 1);
 
@@ -252,6 +252,8 @@ FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 				FTileData* tile = TileDataTable->FindRow<FTileData>(rowName, "Random weight calcs");
 				CurrentWeight -= tile->weight;
 				if (CurrentWeight < 0) {
+					UE_LOGFMT(LogTemp, Log, "select random called, result was {0}", tile->ETileType);
+					D_OnTileGeneratedDelegate.Broadcast(*tile);
 					return *tile;
 				}
 			}
@@ -267,6 +269,8 @@ FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 		UE_LOGFMT(LogTemp, Log, "randomly selected tile from row {0} ", name);
 
 		foundTile = *this->TileDataTable->FindRow<FTileData>(name, "select random");//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
+		//D_OnTileGeneratedDelegate.Broadcast(foundTile);
+
 	}
 	else {
 		UE_LOGFMT(LogTemp, Fatal, "ERROR: TileManager.TileDataTable ref not valid, make sure you set it");

@@ -16,7 +16,7 @@ enum TileType;
 class ARD_GameMode;
 //struct FTileData;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTilePlacedSignature, ETileType, NextTile);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileGeneratedSignature, FTileData, NextTile);
 
 UCLASS()
 class RIVERDRIFT_UE_API ATileManager : public AActor
@@ -32,8 +32,8 @@ public:
 
 	static ASpawnableTile* dummy_tile;
 
-	UPROPERTY(BlueprintReadOnly)
-	FOnTilePlacedSignature D_OnTilePlacedDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FOnTileGeneratedSignature D_OnTileGeneratedDelegate;
 
 
 protected:
