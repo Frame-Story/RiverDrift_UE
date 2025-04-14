@@ -190,6 +190,7 @@ void ARD_PlayerController::OnOverrideWaterTriggered()
 {
 	if (GameMode->PrototypingAsset->bAllowOverridingWater) {
 		bOverrideWater = true;
+		GameMode->TileManager->D_OnTileGeneratedDelegate.Broadcast(GameMode->TileManager->LookupTileType(ETileType::TE_River, "override water triggered"));
 	}
 }
 
@@ -197,9 +198,11 @@ void ARD_PlayerController::OnOverrideWaterReleased()
 {
 	UE_LOGFMT(LogTemp, Log, "overriding water false");
 
-	//if (GameMode->PrototypingManagerInstance->bAllowOverridingWater) {
+	if (GameMode->PrototypingAsset->bAllowOverridingWater) {
 		bOverrideWater = false;
-	//}
+		GameMode->TileManager->D_OnTileGeneratedDelegate.Broadcast(GameMode->TileManager->GetNextTileToPlace(false));
+
+	}
 }
 
 bool ARD_PlayerController::CheckIfTileInRange_Implementation(ASpawnableTile* tile)
