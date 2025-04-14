@@ -199,6 +199,8 @@ void ASpawnableTile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PrimaryActorTick.bCanEverTick = true;
+
 	//UE_LOGFMT(LogTemp, Log, "Yeah it gets called");
 
 }
