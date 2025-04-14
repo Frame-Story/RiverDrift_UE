@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RDBillboardGroupBase.generated.h"
 
+class UMeshComponent;
 class UPaperSpriteComponent;
 
 UCLASS()
@@ -30,7 +31,14 @@ protected:
 public:	
 
 protected:
+
+	APlayerCameraManager* CameraManager;
+
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, category = "tiles")
 	TObjectPtr<UPaperSpriteComponent> ReferenceTile;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, category = "tiles")
+	TArray<TObjectPtr<UMeshComponent> > Billboards;
 
 };

@@ -33,18 +33,18 @@ void URD_Billboard::BeginPlay()
 void URD_Billboard::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 
-	lookRotation = CameraManager->GetCameraRotation();
 
 	//setabsoluterota
 
 	//lookRotation.
-	FRotator lookAtRot = UKismetMathLibrary::FindLookAtRotation( this->GetOwner()->GetActorLocation(), CameraManager->GetCameraLocation());
 
 	lookRotation = UKismetMathLibrary::FindLookAtRotation( this->GetOwner()->GetActorLocation(), CameraManager->GetCameraLocation());
 	//lookRotation = lookRotation + FRotator(0, -90, 0);
 
+	lookRotation = CameraManager->GetCameraRotation();
 
 
+	FRotator lookAtRot = UKismetMathLibrary::FindLookAtRotation( this->GetOwner()->GetActorLocation(), CameraManager->GetCameraLocation());
 	lookRotation = FRotator(0, lookAtRot.Yaw - GetOwner()->GetActorRotation().Yaw, 0);
 	lookRotation += applyRot;
 
