@@ -1,6 +1,7 @@
 #include "Hexes/AA_SpawnableTile.h"
 #include "Hexes/TileManager.h"
 #include "Hexes/TileData.h"
+#include "Hexes/RDSpawnableLandmark.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"

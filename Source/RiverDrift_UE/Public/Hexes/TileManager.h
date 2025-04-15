@@ -12,8 +12,11 @@
 class ASpawnableTile;
 struct FHex;
 struct FOffsetCoord;
+struct FLandmarkKey;
 enum TileType;
 class ARD_GameMode;
+
+
 //struct FTileData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileGeneratedSignature, FTileData, NextTile);
@@ -30,7 +33,16 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDataTable> TileDataTable;
 
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> LandmarkDataTable;
+
+	UPROPERTY(VisibleAnywhere)
+	TMap<FLandmarkKey, FName> LandmarkHashMap;
+
+
 	static ASpawnableTile* dummy_tile;
+
 
 	UPROPERTY(BlueprintAssignable)
 	FOnTileGeneratedSignature D_OnTileGeneratedDelegate;
@@ -53,6 +65,7 @@ protected:
 private:
 	TObjectPtr<ARD_GameMode> GameMode;
 	
+
 	// --  FUNCS ---
 
 
@@ -84,6 +97,9 @@ public:
 	UFUNCTION()
 	void SetTileWeights();
 
+	UFUNCTION()
+	void InitializeLandmarkMap();
+
 protected:
 	//variables
 	
@@ -106,5 +122,7 @@ protected:
 	ASpawnableTile* CreateBlankTile(FHex hexCoord);
 
 	void PlaceNeighbors(ASpawnableTile* tile);
+	
+	static FString LandmarkKeyToString(TArray<ETileType> arr);
 
 };

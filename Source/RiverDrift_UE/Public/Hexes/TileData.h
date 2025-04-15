@@ -15,10 +15,10 @@ UENUM(BlueprintType)
 enum class ETileType : uint8
 {
 	TE_Blank UMETA(DisplayName = "Blank"),
+	TE_River UMETA(DisplayName = "river"),
 	TE_Field UMETA(DisplayName = "field"),
 	TE_Forest UMETA(DisplayName = "forest"),
 	TE_Mountain UMETA(DisplayName = "mountain"),
-	TE_River UMETA(DisplayName = "river"),
 	TE_Town UMETA(DisplayName = "town"),
 	TE_Mystery UMETA(DisplayName = "mystery"),
 };
@@ -55,3 +55,37 @@ public:
 	float cellHeight = cellSize;
 
 };
+
+USTRUCT()
+struct RIVERDRIFT_UE_API FLandmarkKey : public FTableRowBase
+{
+	GENERATED_BODY()
+
+
+public:
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	TArray<ETileType> Key;
+
+
+};
+
+USTRUCT()
+struct RIVERDRIFT_UE_API FLandmarkData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	FLandmarkKey Key;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	UPaperSprite* Sprite;
+
+
+
+};
+

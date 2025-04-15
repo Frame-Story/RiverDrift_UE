@@ -13,11 +13,23 @@
 #include "Logging/StructuredLog.h"
 
 
+FString ATileManager::LandmarkKeyToString(TArray<ETileType> arr)
+{
+	FString string = "{";
+	for (int i = 0; i < arr.Num(); i++) {
+		string += UEnum::GetValueAsString(arr[i]);
+		string += ", ";
+	}
+	string += " )";
+	return string;
+}
+
 // Sets default values
 ATileManager::ATileManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 }
 
 // Called when the game starts or when spawned
@@ -36,6 +48,15 @@ void ATileManager::BeginPlay()
 
 	GameMode->OnGameModeInitializedDelegate.AddUObject(this, &ATileManager::SetTileWeights);
 
+
+	TArray<ETileType> test = { ETileType::TE_River, ETileType::TE_Mountain, ETileType::TE_Mountain };
+
+	//FString ps = LandmarkKeyToString(test);
+	UE_LOGFMT(LogTemp, Log, "presorted array: {0}", LandmarkKeyToString(test));
+
+	test.Sort();
+	UE_LOGFMT(LogTemp, Log, "postsorted array: {0}", LandmarkKeyToString(test));
+
 }
 
 
@@ -45,12 +66,27 @@ void ATileManager::SetTileWeights()
 	fTotalRowsWeight = 0;
 	for (FName name : TileDataTable->GetRowNames()) {
 		FTileData* tile = TileDataTable->FindRow<FTileData>(name, "defaultRiver");
-		GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
+		//GameMode = Cast<ARD_GameMode>(GetWorld()->GetAuthGameMode());
 		if (tile->ETileType!= ETileType::TE_River || GameMode->PrototypingAsset->bAllowWaterGeneration) {
 			fTotalRowsWeight += tile->weight;
 		}
 	}
 	UE_LOGFMT(LogTemp, Log, "setting tile weight, total is {0}", fTotalRowsWeight);
+}
+
+void ATileManager::InitializeLandmarkMap()
+{
+
+	for (FName name : LandmarkDataTable->GetRowNames()) {
+		FLandmarkData* landmark = LandmarkDataTable->FindRow<FLandmarkData>(name, "initializing landmark map");
+		UE_LOGFMT(LogTemp, Log, "presorted key array is {0}", LandmarkKeyToString(landmark->Key.Key));
+
+		landmark->Key.Key.Sort();
+		UE_LOGFMT(LogTemp, Log, "presorted key array is {0}", LandmarkKeyToString(landmark->Key.Key));
+
+
+		LandmarkHashMap.Add(landmark->Key, name);
+	}
 }
 
 //bool ATileManager::tileExists(FHex hex, ASpawnableTile* tile)
@@ -115,6 +151,8 @@ ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 	return tile;
 }
 
+
+//'ultimate' call
 ASpawnableTile* ATileManager::SpawnTile(FHex hexCoord, FTileData format) {
 	//ASpawnableTile* tile = GetWorld()->SpawnActor<ASpawnableTile>(DefaultSpawnableTileBP->StaticClass());
 	ASpawnableTile* tile = GetWorld()->SpawnActor<ASpawnableTile>(DefaultSpawnableTileBP);
@@ -241,6 +279,8 @@ void ATileManager::BuildGrid_Implementation()
 
 FTileData ATileManager::SelectRandomTileType_Implementation(/*bool& valid*/)
 {
+
+
 	FTileData foundTile;
 	if (IsValid(this->TileDataTable)) {
 

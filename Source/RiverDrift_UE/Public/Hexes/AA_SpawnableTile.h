@@ -12,6 +12,9 @@ class ATileManager;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UMaterialInstance;
+class ARDSpawnableLandmark;
+
+
 UCLASS()
 class ASpawnableTile : public AActor
 {
