@@ -3,7 +3,6 @@
 
 #include "Hexes/RDSpawnableLandmark.h"
 #include "Hexes/AA_SpawnableTile.h"
-#include "TileManager.cpp"
 
 // Sets default values
 ARDSpawnableLandmark::ARDSpawnableLandmark()

@@ -13,7 +13,7 @@ class ASpawnableTile;
 struct FHex;
 struct FOffsetCoord;
 struct FLandmarkKey;
-enum TileType;
+//enum TileType;
 class ARD_GameMode;
 
 

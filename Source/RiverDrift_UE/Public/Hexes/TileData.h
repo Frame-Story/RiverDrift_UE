@@ -56,20 +56,63 @@ public:
 
 };
 
-USTRUCT()
-struct RIVERDRIFT_UE_API FLandmarkKey : public FTableRowBase
+USTRUCT(BlueprintType)
+struct RIVERDRIFT_UE_API FLandmarkKey
 {
 	GENERATED_BODY()
 
 
 public:
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	TArray<ETileType> Key;
 
 
+	FLandmarkKey()
+		: FLandmarkKey(TArray<ETileType>{ETileType::TE_Blank, ETileType::TE_Blank, ETileType::TE_Blank})
+	{}
+
+	FLandmarkKey(TArray<ETileType> Key)
+		: Key(Key)
+	{}
+
+	FLandmarkKey(const FLandmarkKey& Other)
+		: FLandmarkKey(Other.Key)
+	{}
+	
+
+	bool operator==(const FLandmarkKey& Other) const
+	{
+		return Equals(Other);
+	}
+
+
+	bool Equals(const FLandmarkKey& Other) const
+	{
+		TArray<ETileType> SortedOther = Other.Key;
+		SortedOther.Sort();
+
+		TArray<ETileType> SortedKey = Key;
+		SortedKey.Sort();
+		for (int i = 0; i < Key.Num(); i++) {
+			if (SortedOther[i] != SortedKey[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 };
+#if UE_BUILD_DEBUG
+uint32 GetTypeHash(const FLandmarkKey& Thing);
+#else // optimize by inlining in shipping and development builds
+FORCEINLINE uint32 GetTypeHash(const FLandmarkKey& Thing)
+{
+	uint32 Hash = FCrc::MemCrc32(&Thing, sizeof(FLandmarkKey));
+	return Hash;
+}
+#endif
+
 
 USTRUCT()
 struct RIVERDRIFT_UE_API FLandmarkData : public FTableRowBase
