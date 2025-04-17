@@ -8,6 +8,7 @@
 #include "Core/RD_GameMode.h"
 #include "Core/DA_RDPrototypeAsset.h"
 #include "Rendering/RenderingSpatialHash.h"
+#include "PaperSprite.h"
 #include "Math/MathFwd.h"
 //#include ""
 #include "Logging/StructuredLog.h"
@@ -23,6 +24,7 @@ FString ATileManager::LandmarkKeyToString(TArray<ETileType> arr)
 	string += " )";
 	return string;
 }
+
 
 // Sets default values
 ATileManager::ATileManager()
@@ -56,6 +58,9 @@ void ATileManager::BeginPlay()
 
 	test.Sort();
 	UE_LOGFMT(LogTemp, Log, "postsorted array: {0}", LandmarkKeyToString(test));
+
+	InitializeLandmarkMap();
+
 
 }
 
@@ -112,8 +117,7 @@ ASpawnableTile* ATileManager::PlaceTile_XY(FOffsetCoord offsetCoord, FTileData f
 }
 
 
-
-//'ultimate'/internal version
+//'ultimate' call
 ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 {
 	ASpawnableTile* tile;
@@ -147,7 +151,8 @@ ASpawnableTile* ATileManager::PlaceTile_QRS(FHex hexCoord, FTileData format)
 
 	UE_LOGFMT(LogTemp, Log, "placetile_QRS called ||  cubic coords q {0} r {1} s {2} ", hexCoord.q, hexCoord.r, hexCoord.s);
 
-	PlaceNeighbors(tile);
+	PlaceNeighbors(tile); 
+	
 	return tile;
 }
 
@@ -162,6 +167,34 @@ ASpawnableTile* ATileManager::SpawnTile(FHex hexCoord, FTileData format) {
 	
 		//insert it into map, has to be converted to vec3 as FMaps can't really do custom structs
 		RD_TileMap.Add(FVector3f(hexCoord.q, hexCoord.r, hexCoord.s), tile);
+
+		TArray<FLandmarkData> potentialLandmarks;
+		UE_LOGFMT(LogTemp, Log, "starting");
+
+		for (int i = 0; i < tile->Neighbors.Num(); i++) {
+			//set our key the tile type of {our tile, neighbors at i, neighbors at i+1
+			TArray<ETileType> keyCheck = {
+				tile->TileType.ETileType, 
+				tile->Neighbors[i]->TileType.ETileType, 
+				tile->Neighbors[(i + 1) % tile->Neighbors.Num()]->TileType.ETileType };//modulo operation for when we loop back around
+
+
+			FLandmarkData* data = LookupTableByName<FLandmarkData>(LandmarkDataTable, *LandmarkHashMap.Find(keyCheck), "in tileMan.spawnTile(), checking whether the tiles exist in the hashmap");
+
+			if (data != nullptr) {
+				UE_LOGFMT(LogTemp, Log, "we found a match!");
+
+			}
+			else {
+				UE_LOGFMT(LogTemp, Log, "nope");
+
+			}
+
+				//keyCheck 
+			//keyCheck = ;
+		}
+
+		//tile->Neighbors
 
 	}
 	else {
@@ -362,6 +395,39 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 {
 	tile->UpgradeTile(format);
 	PlaceNeighbors(tile);
+	for (int i = 0; i < tile->Neighbors.Num(); i++) {
+		//set our key the tile type of {our tile, neighbors at i, neighbors at i+1
+		TArray<ETileType> keyCheck = {
+			tile->TileType.ETileType,
+			tile->Neighbors[i]->TileType.ETileType,
+			tile->Neighbors[(i + 1) % tile->Neighbors.Num()]->TileType.ETileType };//modulo operation for when we loop back around
+
+		if (!IsValid(LandmarkDataTable)) {
+			UE_LOGFMT(LogTemp, Fatal, "LandmarkDataTable not valid");
+		}
+		//if (LandmarkHashMap == nullptr) {
+		//	UE_LOGFMT(LogTemp, Fatal, "LandmarkHashMap not valid");
+		//}
+		//if (!IsValid(LandmarkDataTable)) {
+		//	UE_LOGFMT(LogTemp, Fatal, "LandmarkDataTable not valid");
+		//}
+
+		FName* RowName = LandmarkHashMap.Find(keyCheck);
+
+
+		if ( RowName != nullptr) {
+			FLandmarkData* data = LookupTableByName<FLandmarkData>(LandmarkDataTable, *RowName, "in tileMan.spawnTile(), checking whether the tiles exist in the hashmap");
+			UE_LOGFMT(LogTemp, Log, "we found a match! landmark name is {0}, data is {1}", RowName->ToString(), data->Sprite->GetName());
+
+			
+
+		}
+		else {
+			UE_LOGFMT(LogTemp, Log, "nope");
+
+		}
+
+	}
 }
 
 FTileData ATileManager::LookupTileType(ETileType tileType, FString contextMessage = "context not specified")
@@ -384,5 +450,10 @@ FTileData ATileManager::LookupTileType(ETileType tileType, FString contextMessag
 	return *this->TileDataTable->FindRow<FTileData>(name, contextMessage);//is this a dynamic instance of FTileData because it's returning a pointer? Dunaganq
 
 }
-
+//
+//FTableRowBase* ATileManager::lookupTableByName(UDataTable table, FName name, FString contextMessage = "context not specified")
+//{
+//
+//	return table.FindRow<FTableRowBase>(name, contextMessage);
+//}
 

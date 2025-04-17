@@ -15,9 +15,9 @@ struct FOffsetCoord;
 struct FLandmarkKey;
 //enum TileType;
 class ARD_GameMode;
-
-
-//struct FTileData;
+struct FLandmarkData;
+struct FTableRowBase;
+struct FTileData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileGeneratedSignature, FTileData, NextTile);
 
@@ -38,6 +38,7 @@ public:
 	TObjectPtr<UDataTable> LandmarkDataTable;
 
 	UPROPERTY(VisibleAnywhere)
+	//TMap<FLandmarkKey, FLandmarkData > LandmarkHashMap;    
 	TMap<FLandmarkKey, FName> LandmarkHashMap;
 
 
@@ -125,4 +126,41 @@ protected:
 	
 	static FString LandmarkKeyToString(TArray<ETileType> arr);
 
+	//static FTableRowBase* LookupTableByName(UDataTable* table, FName name, FString& contextMessage);
+	//T* Lookup()shou
+
+
+	template<typename FTableRowChild, typename = std::enable_if_t<std::is_base_of_v<FTableRowBase, FTableRowChild>>>
+	static FTableRowChild* LookupTableByName(UDataTable* Table, FName RowName, const FString& contextMessage)
+	{
+		if (!IsValid(Table)) {
+			UE_LOG(LogTemp, Warning, TEXT("LookupTableByName failed: Table is null. Context: %s"), *contextMessage);
+			return nullptr;
+
+		} 
+
+		FTableRowChild* FoundRow = Table->FindRow<FTableRowChild>(RowName, contextMessage);
+		if (!(FoundRow)) {
+			UE_LOG(LogTemp, Warning, TEXT("LookupTableByName failed: Row '%s' not found in table. Context: %s"), *RowName.ToString(), *contextMessage);
+		} 
+
+		return FoundRow;
+	}
+
+	//static FTableRowChild* LookupTableByName(UDataTable* Table, FName RowName, const FString& ContextString)
+	//{
+	//	if (!Table)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("LookupTableByName failed: Table is null. Context: %s"), *ContextString);
+	//		return nullptr;
+	//	}
+
+	//	FTableRowChild* FoundRow = Table->FindRow<FTableRowChild>(RowName, ContextString);
+	//	if (!FoundRow)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("LookupTableByName failed: Row '%s' not found. Context: %s"), *RowName.ToString(), *ContextString);
+	//	}
+
+	//	return FoundRow;
+	//}
 };

@@ -123,11 +123,13 @@ struct RIVERDRIFT_UE_API FLandmarkData : public FTableRowBase
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	FLandmarkKey Key;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	UPaperSprite* Sprite;
-
 
 
 };
