@@ -5,7 +5,6 @@
 #include "HexLibrary.h"
 #include "Hexes/SpawnableTile.h"
 #include "Hexes/TileData.h"
-#include "Hexes/RDPotentialLandmark.h"
 #include "Hexes/RDSpawnableLandmark.h"
 #include "Core/RD_GameMode.h"
 #include "Core/DA_RDPrototypeAsset.h"
@@ -28,9 +27,9 @@ FString ATileManager::LandmarkKeyToString(TArray<ETileType> arr)
 	return string;
 }
 
-ARDPotentialLandmark* ATileManager::CreatePotentialLandmark(FName name, FLandmarkData data, TArray<ASpawnableTile*> ComposingTiles)
+ARDSpawnableLandmark* ATileManager::CreatePotentialLandmark(FName name, FLandmarkData data, TArray<ASpawnableTile*> ComposingTiles)
 {
-	ARDPotentialLandmark* PotLandmark = GetWorld()->SpawnActor<ARDPotentialLandmark>();
+	ARDSpawnableLandmark* PotLandmark = GetWorld()->SpawnActor<ARDSpawnableLandmark>();
 	
 	
 	return nullptr;
@@ -410,15 +409,19 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 
 
 
-	TArray<ARDPotentialLandmark*> PotentialLandmarks = SpawnPotentialLandmarks(tile) ;
+	TArray<ARDSpawnableLandmark*> PotentialLandmarks = SpawnPotentialLandmarks(tile) ;
 	
 	if (PotentialLandmarks.Num() > 0) {//only bother doing anything if we found at least one
 
 		//for now we'll just spawn the first one, but we'll need to figure out UI for multiple options
 		if (PotentialLandmarks.Num() == 1) {
 			//if there's only one, then we can just finalize it immediately.
-			ARDSpawnableLandmark* landmark = GetWorld()->SpawnActor<ARDSpawnableLandmark>(DefaultSpawnableLandmarkBP);
-			landmark->InitializeLandmark(PotentialLandmarks[0]);
+			PotentialLandmarks[0]->SetIsPotential(false);
+			
+			//ARDSpawnableLandmark* landmark = GetWorld()->SpawnActor<ARDSpawnableLandmark>(DefaultSpawnableLandmarkBP);
+			//landmark->InitializeLandmark(PotentialLandmarks[0]);
+			//landmark->InitializeLandmark()
+			
 		}
 		else {
 			UE_LOGFMT(LogTemp, Error, "there are multiple potential landmarks but we don't know which one to spawn;");
@@ -428,10 +431,10 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 }
 
 
-TArray<ARDPotentialLandmark*> ATileManager::SpawnPotentialLandmarks(ASpawnableTile* tile )
+TArray<ARDSpawnableLandmark*> ATileManager::SpawnPotentialLandmarks(ASpawnableTile* tile )
 {
 	//TMap<FName*, FLandmarkData*> ValidLandmarks;
-	TArray<ARDPotentialLandmark*> ValidLandmarks;
+	TArray<ARDSpawnableLandmark*> ValidLandmarks;
 	for (int i = 0; i < tile->Neighbors.Num(); i++) {
 		//set our key the tile type of {our tile, neighbors at i, neighbors at i+1
 		TArray<ETileType> keyCheck = {
@@ -456,7 +459,7 @@ TArray<ARDPotentialLandmark*> ATileManager::SpawnPotentialLandmarks(ASpawnableTi
 			FLandmarkData* data = LookupTableByName<FLandmarkData>(LandmarkDataTable, *RowName, "in tileMan.spawnTile(), checking whether the tiles exist in the hashmap");
 			UE_LOGFMT(LogTemp, Log, "we found a match! landmark name is {0}, data is {1}", RowName->ToString(), data->Sprite->GetName());
 
-			ARDPotentialLandmark* PotLandmark = GetWorld()->SpawnActor<ARDPotentialLandmark>(DefaultPotentialLandmarkBP);
+			ARDSpawnableLandmark* PotLandmark = GetWorld()->SpawnActor<ARDSpawnableLandmark>(DefaultSpawnableLandmarkBP);
 
 			TArray<ASpawnableTile*> tiles = { tile, tile->Neighbors[i], tile->Neighbors[(i + 1) % tile->Neighbors.Num()]};
 		
@@ -491,8 +494,8 @@ TArray<ARDPotentialLandmark*> ATileManager::SpawnPotentialLandmarks(ASpawnableTi
 	}
 	UE_LOGFMT(LogTemp, Log, "we found {0} valid landmarks that can be placed", ValidLandmarks.Num());
 
-
-	return TArray<ARDPotentialLandmark*>();
+	return ValidLandmarks;
+	//return TArray<ARDSpawnableLandmark*>();
 }
 
 

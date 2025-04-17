@@ -10,7 +10,6 @@
 
 
 class ASpawnableTile;
-class ARDPotentialLandmark;
 struct FHex;
 struct FOffsetCoord;
 struct FLandmarkKey;
@@ -61,8 +60,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASpawnableTile> DefaultSpawnableTileBP;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ARDPotentialLandmark> DefaultPotentialLandmarkBP;
+	//UPROPERTY(EditDefaultsOnly)
+	//TSubclassOf<ARDPotentialLandmark> DefaultPotentialLandmarkBP;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ARDSpawnableLandmark> DefaultSpawnableLandmarkBP;
 
@@ -151,10 +150,9 @@ protected:
 
 		return FoundRow;
 	}
-	ARDPotentialLandmark* CreatePotentialLandmark(FName name, FLandmarkData data, TArray<ASpawnableTile*> ComposingTiles);
-	void SpawnLandmark(ARDPotentialLandmark* PotLandmark);
+	ARDSpawnableLandmark* CreatePotentialLandmark(FName name, FLandmarkData data, TArray<ASpawnableTile*> ComposingTiles);
 
-	TArray<ARDPotentialLandmark*> SpawnPotentialLandmarks(ASpawnableTile* tile);
+	TArray<ARDSpawnableLandmark*> SpawnPotentialLandmarks(ASpawnableTile* tile);
 
 	//static FTableRowChild* LookupTableByName(UDataTable* Table, FName RowName, const FString& ContextString)
 	//{

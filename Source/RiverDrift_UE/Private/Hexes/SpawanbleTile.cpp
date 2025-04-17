@@ -12,8 +12,6 @@
 #include "Materials/MaterialInterface.h"
 #include "PaperSprite.h"
 #include "PaperSpriteComponent.h"
-//#include
-// "PaperSprite.h"
 #include "Engine/World.h"
 
 

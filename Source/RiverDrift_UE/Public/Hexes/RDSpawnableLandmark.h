@@ -10,7 +10,6 @@
 struct FLandmarkData;
 class UPaperSpriteComponent;
 class ASpawnableTile;
-class ARDPotentialLandmark;
 
 UCLASS()
 class RIVERDRIFT_UE_API ARDSpawnableLandmark : public AActor
@@ -21,37 +20,46 @@ class RIVERDRIFT_UE_API ARDSpawnableLandmark : public AActor
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Landmarks")
 	TArray<ASpawnableTile*> ComposingTiles;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Landmarks")
 	UPaperSpriteComponent* Sprite;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Landmarks")
 	FLandmarkData LandmarkData;
 
 
-//protected:
-//
-//
-//
-//public:
+protected:
 
-	// --- FUNCS
-	
-public:	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Landmarks")
+	bool bIsPotential = true;
+	//
+	//
+	//
+	//public:
+
+		// --- FUNCS
+
+public:
 	// Sets default values for this actor's properties
 	ARDSpawnableLandmark();
 
-	void InitializeLandmark(ARDPotentialLandmark* PotentialLandmark);
+	void InitializeLandmark(TArray<ASpawnableTile*> _ComposingTiles, FLandmarkData _LandmarkData, bool _bIsPotential = true);
 
+	UFUNCTION(BlueprintGetter, Category="Landmarks")
+	bool GetIsPotential() const {return bIsPotential; } 
+	void SetIsPotential(bool b);
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+	void SetSpriteAlpha(UPaperSpriteComponent* _Sprite, float alpha);
 
 };

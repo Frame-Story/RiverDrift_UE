@@ -6,13 +6,14 @@
 #include "../HexLibrary.h"
 #include "SpawnableTile.generated.h"
 
-class UPaperSpriteComponent;
-struct FTileData;
 class ATileManager;
+class ARDSpawnableLandmark;
+class UPaperSpriteComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UMaterialInstance;
 class ARDSpawnableLandmark;
+struct FTileData;
 
 
 UCLASS()
@@ -42,8 +43,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UPaperSpriteComponent* BackgroundSpriteComponent;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
-	
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Landmarks")
+	TObjectPtr<ARDSpawnableLandmark> Landmark;
 
 protected:
 
