@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../HexLibrary.h"
-#include "../Hexes/AA_SpawnableTile.h"
+#include "../Hexes/SpawnableTile.h"
 #include "TileManager.generated.h"
 
 
 class ASpawnableTile;
+class ARDPotentialLandmark;
 struct FHex;
 struct FOffsetCoord;
 struct FLandmarkKey;
@@ -51,7 +52,7 @@ public:
 
 protected:
 	UPROPERTY(VisibleInstanceOnly)
-	FTileData NextTileToPlace; //needs to be a pointer as c++ can't tell how to allocate its size
+	FTileData NextTileToPlace; 
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	TMap<FVector3f, ASpawnableTile* > RD_TileMap; //I think this is actually unneeded?
@@ -60,6 +61,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASpawnableTile> DefaultSpawnableTileBP;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ARDPotentialLandmark> DefaultPotentialLandmarkBP;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ARDSpawnableLandmark> DefaultSpawnableLandmarkBP;
 
 	int fTotalRowsWeight;
 
@@ -146,10 +151,10 @@ protected:
 
 		return FoundRow;
 	}
+	ARDPotentialLandmark* CreatePotentialLandmark(FName name, FLandmarkData data, TArray<ASpawnableTile*> ComposingTiles);
+	void SpawnLandmark(ARDPotentialLandmark* PotLandmark);
 
-	void SpawnLandmark(FName name, FLandmarkData data);
-
-	void CheckForPossibleLandmarks();
+	TArray<ARDPotentialLandmark*> SpawnPotentialLandmarks(ASpawnableTile* tile);
 
 	//static FTableRowChild* LookupTableByName(UDataTable* Table, FName RowName, const FString& ContextString)
 	//{

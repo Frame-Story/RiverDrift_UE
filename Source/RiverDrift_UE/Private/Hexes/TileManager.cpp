@@ -3,12 +3,15 @@
 
 #include "Hexes/TileManager.h"
 #include "HexLibrary.h"
-#include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/SpawnableTile.h"
 #include "Hexes/TileData.h"
+#include "Hexes/RDPotentialLandmark.h"
+#include "Hexes/RDSpawnableLandmark.h"
 #include "Core/RD_GameMode.h"
 #include "Core/DA_RDPrototypeAsset.h"
 #include "Rendering/RenderingSpatialHash.h"
 #include "PaperSprite.h"
+#include "PaperSpriteComponent.h"
 #include "Math/MathFwd.h"
 //#include ""
 #include "Logging/StructuredLog.h"
@@ -24,6 +27,15 @@ FString ATileManager::LandmarkKeyToString(TArray<ETileType> arr)
 	string += " )";
 	return string;
 }
+
+ARDPotentialLandmark* ATileManager::CreatePotentialLandmark(FName name, FLandmarkData data, TArray<ASpawnableTile*> ComposingTiles)
+{
+	ARDPotentialLandmark* PotLandmark = GetWorld()->SpawnActor<ARDPotentialLandmark>();
+	
+	
+	return nullptr;
+}
+
 
 
 // Sets default values
@@ -396,7 +408,30 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 	tile->UpgradeTile(format);
 	PlaceNeighbors(tile);
 
-	TMap<FName*, FLandmarkData*> ValidLandmarks;
+
+
+	TArray<ARDPotentialLandmark*> PotentialLandmarks = SpawnPotentialLandmarks(tile) ;
+	
+	if (PotentialLandmarks.Num() > 0) {//only bother doing anything if we found at least one
+
+		//for now we'll just spawn the first one, but we'll need to figure out UI for multiple options
+		if (PotentialLandmarks.Num() == 1) {
+			//if there's only one, then we can just finalize it immediately.
+			ARDSpawnableLandmark* landmark = GetWorld()->SpawnActor<ARDSpawnableLandmark>(DefaultSpawnableLandmarkBP);
+			landmark->InitializeLandmark(PotentialLandmarks[0]);
+		}
+		else {
+			UE_LOGFMT(LogTemp, Error, "there are multiple potential landmarks but we don't know which one to spawn;");
+
+		}
+	}
+}
+
+
+TArray<ARDPotentialLandmark*> ATileManager::SpawnPotentialLandmarks(ASpawnableTile* tile )
+{
+	//TMap<FName*, FLandmarkData*> ValidLandmarks;
+	TArray<ARDPotentialLandmark*> ValidLandmarks;
 	for (int i = 0; i < tile->Neighbors.Num(); i++) {
 		//set our key the tile type of {our tile, neighbors at i, neighbors at i+1
 		TArray<ETileType> keyCheck = {
@@ -404,6 +439,7 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 			tile->Neighbors[i]->TileType.ETileType,
 			tile->Neighbors[(i + 1) % tile->Neighbors.Num()]->TileType.ETileType };//modulo operation for when we loop back around
 
+		
 		if (!IsValid(LandmarkDataTable)) {
 			UE_LOGFMT(LogTemp, Fatal, "LandmarkDataTable not valid");
 		}
@@ -415,10 +451,37 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 		//}
 		FName* RowName = LandmarkHashMap.Find(keyCheck);
 
-		if ( RowName != nullptr) {
+		if (RowName != nullptr) {//we found a match
+
 			FLandmarkData* data = LookupTableByName<FLandmarkData>(LandmarkDataTable, *RowName, "in tileMan.spawnTile(), checking whether the tiles exist in the hashmap");
 			UE_LOGFMT(LogTemp, Log, "we found a match! landmark name is {0}, data is {1}", RowName->ToString(), data->Sprite->GetName());
-			ValidLandmarks.Add(RowName, data);		
+
+			ARDPotentialLandmark* PotLandmark = GetWorld()->SpawnActor<ARDPotentialLandmark>(DefaultPotentialLandmarkBP);
+
+			TArray<ASpawnableTile*> tiles = { tile, tile->Neighbors[i], tile->Neighbors[(i + 1) % tile->Neighbors.Num()]};
+		
+			if (data == nullptr) {
+				UE_LOGFMT(LogTemp, Fatal, "yikes");
+
+			}
+			if (&tiles == NULL) {
+				UE_LOGFMT(LogTemp, Fatal, "yikes");
+
+			}
+			PotLandmark->InitializeLandmark(tiles, *data);
+
+
+			//PotLandmark->ComposingTiles = tiles;
+			//UE_LOGFMT(LogTemp, Fatal, "2");
+			//PotLandmark->LandmarkData = *data;
+			////UE_LOGFMT(LogTemp, Fatal, "3");
+
+			//PotLandmark->Sprite->SetSprite(data->Sprite);
+
+			////UE_LOGFMT(LogTemp, Fatal, "4");
+			ValidLandmarks.Add(PotLandmark);
+			
+			//ValidLandmarks.Add(RowName, data);
 
 		}
 		else {
@@ -428,12 +491,11 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 	}
 	UE_LOGFMT(LogTemp, Log, "we found {0} valid landmarks that can be placed", ValidLandmarks.Num());
 
-	if (ValidLandmarks.Num() > 0) {//only bother doing anything if we found at least one
 
-		//for now we'll just spawn the first one, but we'll need to figure out UI for multiple options
-		
-	}
+	return TArray<ARDPotentialLandmark*>();
 }
+
+
 
 FTileData ATileManager::LookupTileType(ETileType tileType, FString contextMessage = "context not specified")
 {

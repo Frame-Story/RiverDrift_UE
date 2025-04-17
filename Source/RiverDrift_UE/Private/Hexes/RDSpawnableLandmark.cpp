@@ -2,7 +2,9 @@
 
 
 #include "Hexes/RDSpawnableLandmark.h"
-#include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/RDPotentialLandmark.h"
+#include "Hexes/SpawnableTile.h"
+#include "PaperSpriteComponent.h"
 
 // Sets default values
 ARDSpawnableLandmark::ARDSpawnableLandmark()
@@ -10,6 +12,16 @@ ARDSpawnableLandmark::ARDSpawnableLandmark()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+}
+
+void ARDSpawnableLandmark::InitializeLandmark(ARDPotentialLandmark* PotentialLandmark)
+{
+	SetActorLocation(PotentialLandmark->GetActorLocation());
+	ComposingTiles = PotentialLandmark->ComposingTiles;
+
+	LandmarkData = PotentialLandmark->LandmarkData;
+
+	Sprite->SetSprite(LandmarkData.Sprite);
 }
 
 // Called when the game starts or when spawned

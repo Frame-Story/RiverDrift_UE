@@ -4,7 +4,7 @@
 #include "Engine/DataAsset.h"
 #include "TileData.h"
 #include "../HexLibrary.h"
-#include "AA_SpawnableTile.generated.h"
+#include "SpawnableTile.generated.h"
 
 class UPaperSpriteComponent;
 struct FTileData;
@@ -41,6 +41,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UPaperSpriteComponent* BackgroundSpriteComponent;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Tiles")
+	
 
 protected:
 

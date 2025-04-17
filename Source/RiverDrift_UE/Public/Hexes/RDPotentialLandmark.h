@@ -4,10 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PotentialLandmark.generated.h"
+#include "Tiledata.h"
+#include "RDPotentialLandmark.generated.h"
+
+struct FLandmarkData;
+class ASpawnableTile;
+class UPaperSpriteComponent;
 
 UCLASS()
-class RIVERDRIFT_UE_API APotentialLandmark : public AActor
+class RIVERDRIFT_UE_API ARDPotentialLandmark : public AActor
 {
 	GENERATED_BODY()
 	
@@ -21,10 +26,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
 	UPaperSpriteComponent* Sprite;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tiles")
+	FLandmarkData LandmarkData;
+
+
+
 	// --- FUNCS ---
 public:	
 	// Sets default values for this actor's properties
-	APotentialLandmark();
+	ARDPotentialLandmark();
+	void InitializeLandmark(TArray<ASpawnableTile*> _ComposingTiles, FLandmarkData _LandmarkData);
 
 protected:
 	// Called when the game starts or when spawned

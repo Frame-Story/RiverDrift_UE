@@ -114,7 +114,7 @@ FORCEINLINE uint32 GetTypeHash(const FLandmarkKey& Thing)
 #endif
 
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct RIVERDRIFT_UE_API FLandmarkData : public FTableRowBase
 {
 	GENERATED_BODY()
