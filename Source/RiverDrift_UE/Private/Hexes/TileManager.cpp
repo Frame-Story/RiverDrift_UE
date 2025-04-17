@@ -395,6 +395,8 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 {
 	tile->UpgradeTile(format);
 	PlaceNeighbors(tile);
+
+	TMap<FName*, FLandmarkData*> ValidLandmarks;
 	for (int i = 0; i < tile->Neighbors.Num(); i++) {
 		//set our key the tile type of {our tile, neighbors at i, neighbors at i+1
 		TArray<ETileType> keyCheck = {
@@ -411,22 +413,25 @@ void ATileManager::UpgradeTile(FTileData format , ASpawnableTile* tile)
 		//if (!IsValid(LandmarkDataTable)) {
 		//	UE_LOGFMT(LogTemp, Fatal, "LandmarkDataTable not valid");
 		//}
-
 		FName* RowName = LandmarkHashMap.Find(keyCheck);
-
 
 		if ( RowName != nullptr) {
 			FLandmarkData* data = LookupTableByName<FLandmarkData>(LandmarkDataTable, *RowName, "in tileMan.spawnTile(), checking whether the tiles exist in the hashmap");
 			UE_LOGFMT(LogTemp, Log, "we found a match! landmark name is {0}, data is {1}", RowName->ToString(), data->Sprite->GetName());
-
-			
+			ValidLandmarks.Add(RowName, data);		
 
 		}
 		else {
 			UE_LOGFMT(LogTemp, Log, "nope");
 
 		}
+	}
+	UE_LOGFMT(LogTemp, Log, "we found {0} valid landmarks that can be placed", ValidLandmarks.Num());
 
+	if (ValidLandmarks.Num() > 0) {//only bother doing anything if we found at least one
+
+		//for now we'll just spawn the first one, but we'll need to figure out UI for multiple options
+		
 	}
 }
 

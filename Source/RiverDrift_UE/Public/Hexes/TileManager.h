@@ -147,6 +147,10 @@ protected:
 		return FoundRow;
 	}
 
+	void SpawnLandmark(FName name, FLandmarkData data);
+
+	void CheckForPossibleLandmarks();
+
 	//static FTableRowChild* LookupTableByName(UDataTable* Table, FName RowName, const FString& ContextString)
 	//{
 	//	if (!Table)
