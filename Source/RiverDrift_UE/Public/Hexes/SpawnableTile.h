@@ -4,14 +4,18 @@
 #include "Engine/DataAsset.h"
 #include "TileData.h"
 #include "../HexLibrary.h"
-#include "AA_SpawnableTile.generated.h"
+#include "SpawnableTile.generated.h"
 
-class UPaperSpriteComponent;
-struct FTileData;
 class ATileManager;
+class ARDSpawnableLandmark;
+class UPaperSpriteComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UMaterialInstance;
+class ARDSpawnableLandmark;
+struct FTileData;
+
+
 UCLASS()
 class ASpawnableTile : public AActor
 {
@@ -38,6 +42,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UPaperSpriteComponent* BackgroundSpriteComponent;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Landmarks")
+	TObjectPtr<ARDSpawnableLandmark> Landmark;
 
 protected:
 

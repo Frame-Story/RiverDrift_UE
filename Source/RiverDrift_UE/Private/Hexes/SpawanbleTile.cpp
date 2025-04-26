@@ -1,6 +1,7 @@
-#include "Hexes/AA_SpawnableTile.h"
+#include "Hexes/SpawnableTile.h"
 #include "Hexes/TileManager.h"
 #include "Hexes/TileData.h"
+#include "Hexes/RDSpawnableLandmark.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
@@ -11,8 +12,6 @@
 #include "Materials/MaterialInterface.h"
 #include "PaperSprite.h"
 #include "PaperSpriteComponent.h"
-//#include
-// "PaperSprite.h"
 #include "Engine/World.h"
 
 
@@ -29,13 +28,9 @@ ASpawnableTile* ASpawnableTile::InitializeTile(const FHex& h, FTileData prefab, 
 //should standardize your calls
 ASpawnableTile* ASpawnableTile::InitializeTile(FOffsetCoord c, FTileData prefab, AActor* _owner)
 {
-	//UE_LOGFMT(LogTemp, Log, "Creat tile gets called");
-
-
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Owner = _owner;
 	SpawnInfo.ObjectFlags |= RF_Transient;
-
 
 	FVector worldPos;
 	
@@ -44,66 +39,18 @@ ASpawnableTile* ASpawnableTile::InitializeTile(FOffsetCoord c, FTileData prefab,
 	worldPos.Y = (c.y * (prefab.cellWidth * 1.5f));
 	worldPos.Z = 0.0f;
 
-	//worldPos.X = c.y < 0 ? worldPos.X: worldPos.X *-1;
-
-
-	
-	//since the refactor that changed this from static spawn to initialize, we Might be missing out on spawn info
-	// 
-	//tile = _owner->GetWorld()->SpawnActor<ASpawnableTile>(
-	//	ASpawnableTile::getdefaultobje, worldPos, FRotator::ZeroRotator, SpawnInfo);
-	
-	//spawn actor vars that we need to redo:
-	// worldpos
-	// zerorotator
-	//spawninfo?
-
 	SetActorLocation(worldPos);
-
-	//this->PostSpawnInitialize(worldPos,)
 
 	this->SetOwner(_owner);
 	
-	
-	
-	//this->objectflag
-
 	TileType = prefab;
-	//tile->TileType = prefab.ETileType;
-
-
-
-	//UPaperSpriteComponent* SpriteComponent = NewObject<UPaperSpriteComponent>(tile, UPaperSpriteComponent::StaticClass());
-	//
-	//if (SpriteComponent) {
-
-	//	SpriteComponent->RegisterComponent();
-	//	SpriteComponent->AttachToComponent(tile->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-	//}
-	//else {
-	//	UE_LOGFMT(LogTemp, Error, "NOt valid");
-
-	//}
-
 
 	UpdateAppearance(prefab);
 
-	//if (IsValid(prefab.Sprite)) {
-	//	//UE_LOGFMT(LogTemp, Log, "Sprite for the {0} Data Asset HAS been set ", UEnum::GetValueAsString(prefab.ETileType));
-
-	//	tile->SpriteComponent->SetSprite(prefab.Sprite);
-	//}
-	//else {
-	//	UE_LOGFMT(LogTemp, Error, "Sprite for the {0} Data Asset HAS NOT been set ", UEnum::GetValueAsString(prefab.ETileType));
-	//}
-	//tile->SpriteComponent->SetWorldRotation(FRotator(0, 0, -90));
-
 	offsetCoord = FOffsetCoord::FOffsetCoord(c.x/*-c.y/2*/, c.y);//-c.y/2 from catlike
 
-	//set tile's coordinates
 	HexCoord = UHexLibrary::offset_to_cube(offsetCoord);
 	
-	//prefab.sprite
 
 	return this;
 }
@@ -115,15 +62,6 @@ void ASpawnableTile::UpgradeTile(FTileData NewType)
 	this->TileType = NewType;
 
 	UpdateAppearance(NewType);
-
-	//SpriteComponent->SetSprite(NewType.Sprite);
-
-	//if (IsValid(tileManager)) {
-	//	ATileManager::Placeneigh
-	//}
-
-	//TODO: add call to Tilemanager to place neighbors (can this be a static function? otherwise we can just ste the tileman ref on placement) 
-	
 }
 
 void ASpawnableTile::UpdateAppearance(FTileData NewType)
