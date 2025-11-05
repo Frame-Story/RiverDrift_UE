@@ -12,7 +12,7 @@ struct RIVERDRIFT_UE_API FQuestLookup : public FTableRowBase
 
 	FQuestLookup() {
 		//UE_LOG(QuestLog, Log, TEXT("constructor called"))
-		QuestID = FGuid::NewGuid();
+		//QuestID = FGuid::NewGuid();
 	};
 
 	//FQuestLookup(UDA_RDDialogueScene* Scene) {
@@ -24,7 +24,7 @@ struct RIVERDRIFT_UE_API FQuestLookup : public FTableRowBase
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tiles")
-	FGuid QuestID;
+	FGuid QuestID = FGuid::NewGuid();
 
 
 	//Used to set the reference to what other object is associated with this quest. 
@@ -43,25 +43,53 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct RIVERDRIFT_UE_API FDialogueQuestLookup : public FQuestLookup
+struct RIVERDRIFT_UE_API FDialogueQuestLookup : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	FDialogueQuestLookup() {
-		//UE_LOG(QuestLog, Log, TEXT("constructor called"))
-		QuestID = FGuid::NewGuid();
-	};
+	FDialogueQuestLookup() 
+		: QuestID(), DialogueScene(nullptr)
+	{}
 
-	FDialogueQuestLookup(UDA_RDDialogueScene* Scene) {
-		FDialogueQuestLookup();
-		DialogueScene = Scene;
+	//explicit FDialogueQuestLookup(UDA_RDDialogueScene* Scene) 
+	//	:  DialogueScene(Scene) {
+	//	//FDialogueQuestLookup();
+	//	//DialogueScene = Scene;
 
-	};
+	//	//QuestID = FGuid::NewGuid();
+	//}
 
 public:
 
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tiles")
-	TObjectPtr<UDA_RDDialogueScene> DialogueScene;
+	FGuid QuestID;
+
+
+	//Used to set the reference to what other object is associated with this quest. 
+	// When the player "interacts" with this object, the quest will progress
+	// - Table: needs to be set to the landmarks data table or the dialogue quest lookup table
+	// - Row: the row within that table that will identify the object
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Quests")
+	FDataTableRowHandle OtherObjectRowHandle;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tiles")
+	//FGuid QuestID = FGuid::NewGuid();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tiles")
+	TObjectPtr<UDA_RDDialogueScene> DialogueScene = nullptr;
 
 };
+
+//template<> RIVERDRIFT_UE_API UScriptStruct* StaticStruct<FDialogueQuestLookup>()
+//{
+//	static class UScriptStruct* Singleton = nullptr;
+//	if (!Singleton)
+//	{
+//		Singleton = FDialogueQuestLookup::StaticStruct();
+//	}
+//	return Singleton;
+//}
+
  

@@ -33,6 +33,13 @@ struct RIVERDRIFT_UE_API FTileData : public FTableRowBase
 	GENERATED_BODY()
 
 
+	FTileData()
+		: Sprite(nullptr)
+		, ETileType(ETileType::TE_Blank)
+		, bIsPlayerTraversible(false)
+	{
+	}
+
 public:
 
 

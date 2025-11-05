@@ -11,7 +11,7 @@ struct FRDDialogueResponseOption;
 struct FRDDialogueSlide;
 struct FDialogueQuestLookup;
 
-static const FString TablePath = TEXT("/Game/Data/cutscenes/DT_DialogueQuestLookup.DT_DialogueQuestLookup");
+static const FString TablePath = TEXT("/Game/Data/cutscenes/DT_DialogueQuestLookup3.DT_DialogueQuestLookup3");
 
 USTRUCT(BlueprintType)
 struct FRDDialogueResponseOption
@@ -69,7 +69,7 @@ public:
 
 	virtual void PostLoad() override;
 
-	void RegisterDataTable();
+	void fRegisterDataTable();
 
 	UFUNCTION(BlueprintCallable)
 	void CloseDialogueScene();
@@ -77,6 +77,8 @@ public:
 	
 	TObjectPtr<FDialogueQuestLookup> QuestLookupRow;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName RowNameInDataTable;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadonly)
 	UDataTable* QuestLookupDataTable;

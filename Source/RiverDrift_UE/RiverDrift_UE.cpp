@@ -2,7 +2,18 @@
 
 #include "RiverDrift_UE.h"
 #include "Modules/ModuleManager.h"
+#include "Quests/QuestLookup.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, RiverDrift_UE, "RiverDrift_UE" );
+
+class FRiverDrift_UEModule : public FDefaultGameModuleImpl
+{
+	virtual void StartupModule() override {
+		(void)FDialogueQuestLookup::StaticStruct();
+
+	}
+
+};
+
+IMPLEMENT_PRIMARY_GAME_MODULE(FRiverDrift_UEModule, RiverDrift_UE, "RiverDrift_UE" );
 
 DEFINE_LOG_CATEGORY(QuestLog);
